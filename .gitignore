@@ -1,0 +1,9 @@
+*.aux
+*.fdb_*
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.tex~
+*.ptc
