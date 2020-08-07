@@ -11,21 +11,19 @@
 - Liste des annexes -->
 
 - Introduction
-  - [ ] fonction d'ouverture
-  - [ ] Méthodologie
-  - [ ] Annonce du plan
+- Données et formats
+  - LiDAR
+  - STL
+  - VTK
 - Algorithmes
-  - Decimation
+  - Decimation / Filtrage
   - Triangulation
-    - Delaunay
   - Fusion de triangulation
-    - Divide and conquere
-- Architecture de l'api
+    - Divide and conquer
+- Architecture de l'application / Implémentation
   - Librairie
-  - client web
   - Serveur
-
-
+  - Client Web
 
 <!-- - Conclusion
   - [ ] Fonction de rappel
