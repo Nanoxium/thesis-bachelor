@@ -12,9 +12,49 @@
 \end{center}
 
 
-\chapter*{Annexe 1}
-\addcontentsline{toc}{chapter}{Annexe 1}
-
+\chapter*{Annexe 1: Tableau des champs de l'en-tête de fichier LAS}
+\addcontentsline{toc}{chapter}{Annexe 1: Tableau des champs de l'en-tête de fichier LAS}
+\begin{table}[htpb!]
+\centering
+\begin{tabular}{|l|l|c|c|}
+\hline
+\multicolumn{1}{|c|}{\textbf{Champ}} & \multicolumn{1}{c|}{\textbf{Type de donnée}} & \textbf{Taille (Octets)} & \textbf{Requis} \\ \hline
+File Signature (“LASF”)              & char{[}4{]}              & 4     & * \\ \hline
+File Source ID                       & unsigned short           & 2     & * \\ \hline
+Global Encoding                      & unsigned short           & 2     &   \\ \hline
+Project ID - GUID data 1             & unsigned long            & 4     &   \\ \hline
+Project ID - GUID data 2             & unsigned short           & 2     &   \\ \hline
+Project ID - GUID data 3             & unsigned short           & 2     &   \\ \hline
+Project ID - GUID data 4             & unsigned char{[}8{]}     & 8     &   \\ \hline
+Version Major                        & unsigned char            & 1     & * \\ \hline
+Version Minor                        & unsigned char            & 1     & * \\ \hline
+System Identifier                    & char{[}32{]}             & 32    & * \\ \hline
+Generating Software                  & char{[}32{]}             & 32    & * \\ \hline
+File Creation Day of Year            & unsigned short           & 2     &   \\ \hline
+File Creation Year                   & unsigned short           & 2     &   \\ \hline
+Header Size                          & unsigned short           & 2     & * \\ \hline
+Offset to point data                 & unsigned long            & 4     & * \\ \hline
+Number of Variable Length Records    & unsigned long            & 4     & * \\ \hline
+Point Data Format ID (0-99 for spec) & unsigned char            & 1     & * \\ \hline
+Point Data Record Length             & unsigned short           & 2     & * \\ \hline
+Number of point records              & unsigned long            & 4     & * \\ \hline
+Number of points by return           & unsigned long{[}5{]}     & 20    & * \\ \hline
+X scale factor                       & double                   & 8     & * \\ \hline
+Y scale factor                       & double                   & 8     & * \\ \hline
+Z scale factor                       & double                   & 8     & * \\ \hline
+X offset                             & double                   & 8     & * \\ \hline
+Y offset                             & double                   & 8     & * \\ \hline
+Z offset                             & double                   & 8     & * \\ \hline
+Max X                                & double                   & 8     & * \\ \hline
+Min X                                & double                   & 8     & * \\ \hline
+Max Y                                & double                   & 8     & * \\ \hline
+Min Y                                & double                   & 8     & * \\ \hline
+Max Z                                & double                   & 8     & * \\ \hline
+Min Z                                & double                   & 8     & * \\ \hline
+\end{tabular}
+\caption[Champs de l'en-tête d'un fichier LAS]{Champs de l'en-tête d'un fichier LAS}
+\label{tab:las_header}
+\end{table}
 
 \chapter*{Annexe 2}
 \addcontentsline{toc}{chapter}{Annexe 2}

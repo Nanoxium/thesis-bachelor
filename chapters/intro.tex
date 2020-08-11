@@ -2,11 +2,22 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction} % Adding toc entry
 
-Les modèles numérique tridimensionnelles sont de nos jours présent dans de
-nombreuses applications. Allant d'une simple vidéo à un jeu vidéo, ils nécessite
-tous d'être rendu à l'écran d'une certaine manière, la plupars du temps
-utilisant une applications native à un
+% Depuis des millénaires, cartographier des régions aide l’Homme de diverses manières dans ses activités.
+% Notamment pour l’orientation dans les zones difficiles d’accès mais aussi dans les projets de rechercheset développement. De nouvelles technologies permettent depuis quelques années de, non seulement carto-graphier des régions, mais aussi de les transformer en environnements numériques tridimensionnels.
+%  Cesinformations sont depuis récoltées par voies aériennes. L
+% eLight Detection And Ranging(LiDAR) faitpartie des moyens de récoler ces informations. Utilisé avec les bons outils de traitement de l’information,il est possible d’extrapolé d’autres informations qui ouvre de nouvelles voies dans des domaines tel que labiologie, la géologie ou bien même la simulation de fluides. Le projet dispose de données récoltées de larégion de Genève et ses environs grâce au système d’information du territoire de Genève. 
+% Le traitementde ces informations mène à un format de sortie connus sous le nom de formatStéréolithographie(STL)qui est utilisé dans les logiciels de conception 3D. Le résultat de ce traitement donne une reconstructionde surfaces de la région de Genève. 
+% Un défi lors de ce projet était de le réaliser à partir du langage deprogrammation rust. 
+% Un langage moderne se basant sur des principes de programmation connus maisaussi innovateurs qui empêche de nombreuses erreurs commises par les programmeurs. Il vient égalementavec de nombreux outils aidant au déploiment de logiciel ainsi que la gestion de projet. 
+% Ce documentregroupe des informations concernant un moyen de reconstruire des surfaces à partir d’un nuage pointsqu’est la triangulation de Delaunay. 
+% Il parle aussi bien de ces données récoltées par voies aériennes ainsique de leur format. 
+% Enfin le document discute sur des manière d’améliorer cette reconstruction de surfacesen terme d’efficacité de calcul.
 
-\section*{motivation}
-
-
+La forte avancée technologiques de ces dernières années a permis l'Homme de récolter des données et de les réutiliser de diverses manières dans le but de simplifier ses activités. 
+La récolte des données peut être massive au point où il devient difficile de les utiliser sans un traitement préalable.
+Dans le cas de la cartographie numérique, la quantité de données est trop importante pour être traité manuellement et nécessite la mise en oeuvre de méthodes analytiques afin d'arriver à un résultat qui puisse être réutilisé rapidement. 
+Les données cartographiques traitées servent de nombreux domaines, pour en citer quelques uns : Les simulations de fluides, le repérage dans des zones inaccessibles, etc... Mon projet s'oriente plus spécifiquement sur les données lidar plus spécifiquement de provenance aérienne. 
+Il s'agit de données topographiques permettant la visualisation en trois dimension des niveaux d'élévations de régions terrestres.
+L'application présentée dans le document comportes plusieurs outils dont certains permettant la création de maillages à partir de données lidar, de décimation de maillage, de filtrage de données lidar et la visualisation au travers d'un client web des régions capturées. 
+% TODO: Peut-être reformulé la phrase suivante
+On abordera en premier lieu les différents formats de données que nous rencontrons dans ces domaines ensuite nous allons détailler les problèmes lié au traitement des données lidar et des données de maillages ainsi que leurs méthodes de traitement puis enfin détaillé l'architecture de l'application produite et ses fonctionnalités.

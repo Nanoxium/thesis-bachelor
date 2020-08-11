@@ -13,8 +13,14 @@
 - Introduction
 - Données et formats
   - LiDAR
+    - File format
+    - LAS File
+    - Domain of use
   - STL
+    - File format
+    - Domain of use
   - VTK
+    - File format
 - Algorithmes
   - Decimation / Filtrage
   - Triangulation
