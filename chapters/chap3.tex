@@ -1,9 +1,23 @@
 % !TeX spellcheck = fr_FR
 \chapter{Chapitre 3 : Architecture de l'application et implémentations}
 
+L'application produite lors de ce travail de bachelor se base sur une implémentation existante de certains outils réalisés lors d'un projet de semestre. Elle est principalement réaliser dans le langage de programmation Rust qui est un langage moderne mutiparadigme, fiable, rapide et sécurisé au niveau de la mémoire. Rust utilise des outils dédiés au langage pour accélérer le développement de logiciels dont "cargo" qui est un gestionnaire de paquet et de compilation, "rustfmt", un formateur de code et "clippy", un analyseur de code qui indique des erreurs communes réalisées lors de l'écriture du code. Dans la nomenclature de Rust, le mot "crate" désigne un paquet ou une librairie externe.
 
 \section{Architecture}
+L'architecture de l'application est composée de quatre modules principaux.
+La librairie qui regroupe les fonctions et les structures qui sont communes à l'application.
+Le serveur qui expose les fichiers mis à disposition par le \gls{SITG}.
+Le client web servant de visualiseur de donnée pour un utilisateur.
+Les utilitaires, contenant les entrées des programmes utilitaires en ligne de commande telle que la triangulation d'un fichier lidar.
 
 \section{Librairie}
+
+La librairie contient les outils de lecture et d'écriture de fichiers pour les formats du chapitre 2. Elle expose aussi les structures de données pour les différents algorithmes du chapitre 2.
+
+Elle a comme dépendance principale les crates "stl-io" qui implémentes les structures pour écrire les fichiers \gls{stl} et "las-rs" qui expose les structures et méthodes liées aux données lidar.
+
+\subsection{Triangulation}
+La librairie contient un module de triangulation.
+
 \section{Serveur}
 \section{Client web}

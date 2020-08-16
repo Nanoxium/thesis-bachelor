@@ -5,7 +5,7 @@
 % 	\textit{Chaque chapitre doit commencer sur une nouvelle page.}\\*[35pt]
 % \end{center}
 
-Dans ce chapitre nous allons aborder les différents format de données qui seront
+Dans ce chapitre nous allons aborder les différents formats de données qui seront
 cités dans la suite de ce document.
 
 \section{Fichier lidar}
@@ -31,7 +31,7 @@ Il existe différentes versions de la spécification et ce document va se concen
 Le format de stockage des nuages de points de données \gls{lidar}, est un format
 binaire dont les spécifications sont définies par l'\gls{asprs}.
 Le format \gls{las} est composé de trois sections, respectivement:
-L'en-tête de fichier, les enregistrement à longueur variable et les données lier aux points récoltés.
+L'en-tête de fichier, les enregistrements à longueur variable et les données liées aux points récoltés.
 
 \begin{table}[!h]
     \centering
@@ -72,9 +72,9 @@ Dans toutes les sections, on défini les types de données dans le tableau \ref{
     \label{tab:data_type}
 \end{table}
 
-\subsection{En-tête publique}
+\subsection{En-tête public}
 
-L'en-tête publique comporte les métadonnées du fichier.
+L'en-tête public comporte les métadonnées du fichier.
 Il est composé de tous les champs du tableau~\ref {tab:las_header} présent dans l'annexe~1.
 Tous les champs inutilisés doivent être remplis par des bits nuls et les champs sont tous en little endian.
 La signature de fichier doit obligatoirement contenir les quatre caractères “LASF” et est requise par la spécification.
@@ -98,9 +98,9 @@ Les champs min et max $X, Y, Z$ sont les valeurs minimales et maximales non mise
 \subsection{Enregistrements à longueur variable}
 
 Ce bloc suit directement l'en-tête de fichier et peut avoir une ou plusieurs entrées.
-Le nombre total d'entrée est spécifié dans le champs "Number of Variable Length Records" de l'en-tête de fichier.
-Ce bloc doit être lu de manière séquentielle car chaque entrée est de taille variable.
-Chaque entrée est débutée par une en-tête de 54 octets selon le tableau \ref{tab:las_var_record_header}
+Le nombre total d'entrées est spécifié dans le champ "Number of Variable Length Records" de l'en-tête de fichier.
+Ce bloc doit être lu de manière séquentielle, car chaque entrée est de taille variable.
+Chaque entrée est débutée par un en-tête de 54 octets selon le tableau \ref{tab:las_var_record_header}
 
 \begin{table}[!htb]
 \centering
@@ -114,35 +114,115 @@ Record Lenght After Header           & unsigned short                           
 Description                          & char{[}32{]}                                 & 32                       &                 \\ \hline
 \end{tabular}
 \caption{
-Champs de l'en-tête des enregistrement de longueur variable.
+Champs de l'en-tête des enregistrements de longueur variable.
 Source: adapté de LAS Specification Version 1.2 (2008, p. 6)}
 \label{tab:las_var_record_header}
 \end{table}
 
 Les enregistrements peuvent provenir de sources différentes.
-Elles sont identifiées dans le par le champ "User ID" qui est une chaîne de caractères unique et enregistrée auprès d'une organisation afin de prévenir que deux sources différentes aie la même séquence.
+Elles sont identifiées par le champ "User ID" qui est une chaîne de caractères unique et enregistrée auprès d'un organe d'identification des producteurs de données lidar afin de prévenir que deux sources différentes aie la même séquence.
 
 Chaque utilisateur dispose de 65536 enregistrements au maximum qu'il gère de manière indépendante.
-Les identifiants des enregistrement sont renseigné dans le champ "Record ID" de l'en-tête.
-Il peut également, s'il le souhaite, publier un signification lié aux identifiants d'enregistrement.
+Les identifiants des enregistrements sont renseignés dans le champ "Record ID" de l'en-tête.
+Il peut également, s'il le souhaite, publier une signification liée aux identifiants choisis.
 
-"Record Lenght After Header": il s'agit d'un offset en nombre d'octets qui indique l'endroit où commence les données aprés l'en-tête de 54 bytes.
-La source des données peut renseigner des informations supplémentaires dans l'en-tête mais elles ne suivront pas le standard de la spécification.
+"Record Lenght After Header": il s'agit d'un offset en nombre d'octets qui indique l'endroit où commencent les données après l'en-tête de 54 octets.
+La source des données peut renseigner des informations supplémentaires dans l'en-tête, mais elles ne suivront pas le standard de la spécification.
 
 \subsection{Données des points}
+
 Les données des points commencent à l'adresse du champ "Offset to Point Data" de l'en-tête de fichier.
-Il existe quatre formats pour les entrées de point. 
+Il existe quatre formats pour les entrées de point.
 
-Le format zero est le plus commun. 
+Le format zéro contient les champs communs à tous. Les informations présentées sont dans le tableau \ref{tab:las_point_data}
+\begin{table}[!h]
+\centering
+\begin{tabular}{|l|l|c|c|}
+\hline
+\multicolumn{1}{|c|}{\textbf{Champ}}     & \multicolumn{1}{c|}{\textbf{Format de donnée}} & \textbf{Taille} & \textbf{Requis} \\ \hline
+X                                        & long                                           & 4 octets        & *               \\ \hline
+Y                                        & long                                           & 4 octets        & *               \\ \hline
+Z                                        & long                                           & 4 octets        & *               \\ \hline
+Intensity                                & unsigned short                                 & 2 octets        &                 \\ \hline
+Return number                            & 3 bits (bits 0, 1, 2)                          & 3 bits          & *               \\ \hline
+Number of returns (given pulse)          & 3 bits (bits 3, 4, 5)                          & 3 bits          & *               \\ \hline
+Scan Direction Flag                      & 1 bit (bit 6)                                  & 1 bit           & *               \\ \hline
+Edge of Flight Line                      & 1 bit (bit 7)                                  & 1 bit           & *               \\ \hline
+Classification                           & unsigned char                                  & 1 octet         & *               \\ \hline
+Scan Angle Rank (-90 to +90) – Left side & char                                           & 1 octet         & *               \\ \hline
+User Data                                & unsigned char                                  & 1 octet         &                 \\ \hline
+Point Source ID                          & unsigned short                                 & 2 octets        & *               \\ \hline
+\end{tabular}
+\caption{
+Information d'un point présent dans un fichier \gls{las},
+Source: adapté de LAS Specification Version 1.2 (2008, p. 6)}
+\label{tab:las_point_data}
+\end{table}
 
+Les points sont collectés à partir des impulsions de laser envoyées et détectées par un capteur le tout depuis un aéronef.
+
+% TODO : Insert image lidar instrument scheme here
+
+On peut considérer une entrée dans le fichier comme une impulsion de lumière émise lors de la mesure des points.
+Chaque impulsion peut recevoir plusieurs retours d'où le champ "Number of returns (given pulse)".
+Il est aussi nécessaire de connaître l'angle de l'appareil par rapport à l'horizon afin de corriger la position du point récolté, car seul l'angle de l'instrument de mesure ne suffit pas.
+Cet angle est en degré et allant de -90° à +90° à partir de l'aile gauche de l'aéronef dans le sens du vol.
+
+Le format un ajoute simplement des informations concernant le temps \gls{gps} à laquelle le point à été enregistré.
+% TODO: Place image here
+
+\subsection{Classification des points}
+
+Les points collectés sont généralement classés selon le type de sol rencontré. Les valeurs se trouvent au tableau \ref{tab:las_point_class_meaning}.
+Toutes les informations concernant le classement sont contenues en un octet et  en quatre sections. Elles sont expliquées dans le tableau \ref{tab:las_class_byte_explanation}.
+
+Les cinq premiers bits correspondent à une table standard des classifications.
+Si le bit cinq à un, le point a été créé par un logiciel de manière synthétique et si le bit sept est aussi à un, le point ne doit pas être pris en compte. Il est considéré comme étant supprimé.
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{ccccclll}
+\hline
+\multicolumn{1}{|c|}{0} & \multicolumn{1}{c|}{1} & \multicolumn{1}{c|}{2} & \multicolumn{1}{c|}{3} & \multicolumn{1}{c|}{4} & \multicolumn{1}{c|}{5}           & \multicolumn{1}{c|}{6}         & \multicolumn{1}{c|}{7}      \\ \hline
+\multicolumn{5}{|c|}{N° de classification}                                                                                  & \multicolumn{1}{l|}{Synthétique} & \multicolumn{1}{l|}{Point clé} & \multicolumn{1}{c|}{Retenu} \\ \hline
+\multicolumn{8}{c}{1 octet}                                                                                                                                                                                                  
+\end{tabular}
+\caption{ Représentation des bits dans l'octet de classification. Source : adapté de LAS Specification Version 1.2 (2008, p. 8)}
+\label{tab:las_class_byte_explanation}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begin{tabular}{|c|l|}
+\hline
+\textbf{N° de classification (bit 0 à 4)} & \multicolumn{1}{c|}{\textbf{Signification}} \\ \hline
+0                                         & Créé, jamais classé                         \\ \hline
+1                                         & Non classé                                  \\ \hline
+2                                         & Sol                                         \\ \hline
+3                                         & Faible végétation                           \\ \hline
+4                                         & Végétation moyenne                          \\ \hline
+5                                         & Végétation dense                            \\ \hline
+6                                         & Bâtiment                                    \\ \hline
+7                                         & Bruit                                       \\ \hline
+8                                         & Point de masse                              \\ \hline
+9                                         & Eau                                         \\ \hline
+10-11                                     & Réservé                                     \\ \hline
+12                                        & Point superposé                             \\ \hline
+13-31                                     & Réservé                                     \\ \hline
+\end{tabular}
+\caption{Signification des valeurs de classification. Source : adapté de LAS Specification Version 1.2 (2008, p. 8)}
+\label{tab:las_point_class_meaning}
+\end{table}
+
+\newpage
 \section{Fichier Stéréoligraphique}
 
-Le format de fichier \gls{stl} est conçu par la société 3D System pour contenir des modèles d'objets tridimensionnelles.
+Le format de \gls{stl} est conçu par la société 3D System pour contenir des modèles d'objets tridimensionnels.
 Il a été pensé pour permettre un prototypage rapide dans les logiciels de \gls{cao}. 
 Ce format ne décrit que la géométrie de la surface d'un modèle.
-Il existe un format binaire et un format ascii, le dernier laissant une empreinte dans la mémoire morte plus conséquente.
+Il existe un format binaire et un format ASCII, le dernier laissant une empreinte dans la mémoire morte plus conséquente.
 
-On y stock les triangles composant le modèle où chaque sommet du triangle est décrit par ses coordonnées cartésienne $(x,y,z)$. Chaque triangle partage, sans exception, deux sommets avec un triangle voisin.
+On y stocke les triangles composant le modèle où chaque sommet du triangle est décrit par ses coordonnées cartésiennes $(x,y,z)$. Chaque triangle partage, sans exception, deux sommets avec un triangle voisin.
 La coordonnée dans l'axe $z$ est considérée comme l'axe vertical, ceci peut être gênant pour les programmes considérant l'axe $y$ comme l'axe vertical.
 
 \subsection{Format ASCII}
@@ -150,6 +230,7 @@ La coordonnée dans l'axe $z$ est considérée comme l'axe vertical, ceci peut �
 Le format commence par la séquence de caractères : "solid \textit{nom}" où \textit{nom} est une séquence correspondant au nom du modèle qui est facultatif.
 Si le nom est vide, l'espace après "solid" est obligatoire.
 Un triangle s'écrit de la manière suivante :
+\begin{minipage}{\linewidth}
 \begin{lstlisting}[frame=single, escapechar=\%]
 facet normal % $n_x$% %$n_y$% %$n_z$%
     outer loop
@@ -159,77 +240,29 @@ facet normal % $n_x$% %$n_y$% %$n_z$%
     endloop
 endfacet
 \end{lstlisting}
-Les sommets sont définis à l'aide du mot clé "vertex" qui sont contenus dans un block loop. Les $n$ et les $v$ sont des nombres à virgule flotante.
+\end{minipage}
+Les sommets sont définis à l'aide du mot clé "vertex" qui sont contenus dans un bloc loop. Les $n$ et les $v$ sont des nombres à virgule flottante.
 Ils s'écrivent dans le format "signe-mantisse-e-signe-exposant", par exemple "6.248000e-003".
-La fin du fichier ascii est définie par la séquence : "end solid".
+La fin du fichier ASCII est définie par la séquence : "end solid".
 
 \subsection{Format binaire}
 
-\section{Fichier VTK}
+Le format binaire présente un avantage considérable par rapport au format ASCII, il est beaucoup moins volumineux. 
 
-% \begin{figure}[tbph!]
-% 	\centering
-% 	\includegraphics[width=0.7\linewidth]{chart}
-% 	\caption[Diagramme machin]{Diagramme machin. Source : tiré de Tartempion 2010, p. 42 / tiré de ce-site.ch, ref. URL01 / réalisé par Nom Prénom.}
-% 	\label{fig:chart1}
-% \end{figure}
-% 
-% 
-% \begin{table}[tbph!]
-% 	\centering{
-% 		\begin{tabular}{ |l|c|c|c| }
-% 			\hline
-% 			& \textbf{Condition 1} & \textbf{Condition 2} & \textbf{Condition 3} \\
-% 			\hline
-% 			\textbf{Test 1} & X & O & X \\
-% 			\hline
-% 			\textbf{Test 2} & O & X & X \\
-% 			\hline
-% 			\textbf{Test 3} & O & X & O \\
-% 			\hline 
-% 		\end{tabular}
-% 		\caption[Lot de données n°1]{Lot de données n°1. Source: tiré de Tartempion 2010, p. 42 / tiré de ce-site.ch, ref. URL02 / réalisé par Nom Prénom.}
-% 		\label{tab:tableau1}
-% 	}
-% \end{table}
-% 
-% 
-% \begin{figure}[tbph!]
-% 	\centering
-% 	\includegraphics[width=0.7\linewidth]{diagram}
-% 	\caption[Schéma bidule.]{Schéma bidule. Source : tiré de Tartempion 2010, p. 42 / tiré de ce-site.ch, ref. URL03 / réalisé par Nom Prénom.}
-% 	\label{fig:diagram}
-% \end{figure}
-% 
-% 
-% \section{Titre de niveau 2}
-% 
-% 
-% \begin{figure}[tbph!]
-% 	\centering
-% 	\includegraphics[width=0.7\linewidth]{ordi}
-% 	\caption[Alice, Micro-ordinateur MATRA.]{Alice, Micro-ordinateur MATRA. Source : tiré de Tartempion 2010, p. 42 / tiré de ce-site.ch, ref. URL03 / réalisé par Nom Prénom.}
-% 	\label{fig:image}
-% \end{figure}
-% 
-% 
-% \subsection{Titre de niveau 3}
-% 
-% 
-% \begin{table}[tbph!]
-% 	\centering{
-% 		\begin{tabular}{ |l|c|c|c| }
-% 			\hline
-% 			& \textbf{Condition 1} & \textbf{Condition 2} & \textbf{Condition 3} \\
-% 			\hline
-% 			\textbf{Test 1} & X & O & X \\
-% 			\hline
-% 			\textbf{Test 2} & O & X & X \\
-% 			\hline
-% 			\textbf{Test 3} & O & X & O \\
-% 			\hline 
-% 		\end{tabular}
-% 		\caption[Lot de données n°2.]{Lot de données n°2. Source: tiré de Tartempion 2010, p. 42 / tiré de ce-site.ch, ref. URL05 / réalisé par Nom Prénom.}
-% 		\label{tab:tableau2}
-% 	}
-% \end{table}
+Les 80 premiers octets sont un commentaire. Les quatre suivants sont un entier 32 bits qui indique le nombre de triangles présent dans le fichier.
+Chaque triangle est encodé sur 50 octets. Comme le format ASCII, les nombres sont encodés conformément à la spécification IEEE-754 et en mode little endian.
+
+Le format dans le fichier est le suivant : 
+
+\begin{lstlisting}[frame=single]
+unsigned char[80] - header
+unsigned int - total number of triangles
+
+foreach triangle:
+    float - normal vector
+    float - vertex 1
+    float - vertex 2
+    float - vertex 3
+unsigned short - control word
+end
+\end{lstlisting}
