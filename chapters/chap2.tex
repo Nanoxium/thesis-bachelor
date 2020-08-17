@@ -11,12 +11,12 @@ Le filtrage des données \gls{lidar} reste toutefois utile sur des systèmes plu
 
 \subsection{Filtre par classe de point}
 Une première méthode pour filtrer les données est de se baser sur la classification des points du chapitre 1.1. En connaissant les informations qui nous intéressent, le filtrage se fait donc lors de la lecture des données.
-Étant données que la lecture se déroule de manière séquentielle, il suffit de poser une ou plusieurs conditions vérifiant la classe du point.
+Étant donné que la lecture se déroule de manière séquentielle, il suffit de poser une ou plusieurs conditions vérifiant la classe du point.
 Si la condition est respectée, le point est collecté dans une liste de points à garder, le cas échéant étant simplement de l'ignorer.
 Une fois la lecture terminée, on réécrit la liste des points gardés dans un nouveau fichier \gls{lidar}.
 Le fichier original peut être supprimé ou conservé.
 
-\subsection{Filtre par point pondérer}
+\subsection{Filtre par point pondéré}
 
 Une autre manière de réduire la quantité de données est de remplacer plusieurs points par un seul où l'élévation de celui-ci équivaut à la moyenne des élévations des voisins.
 En d'autres termes $$ P_{\bar{y}} = \frac{1}{n} \sum_{i=0}^{n} p_{iy} $$
@@ -24,21 +24,42 @@ où $n$ est le nombre de voisins d'un point $P$.
 Le choix de l'endroit où l'on créera le point peut être déterminé à l'aide d'une condition, p. ex. $$\sum_{i=0}^n dist(P, p_i) \geq \epsilon$$
 
 Un effet de bord de cette méthode est le lissage des surfaces plates. Un exemple serait les illustrations \ref{fig:before_las_filter} et \ref{fig:after_las_filter} où l'on peut observer qu'après une reconstruction de surface, on aperçoit que les points on une tendance à moins osciller dans l'axe vertical.
-
-\begin{figure}[tbh!]
+\begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/lissage_brut.png}
-    \caption{Surface plane avant le passage par un filtre. Source : réaliser par Jérôme Chételat}
+    \caption{Surface plane avant le passage par un filtre. Source : réalisé par Jérôme Chételat}
     \label{fig:before_las_filter}
 \end{figure}
-\begin{figure}[tbh!]
+\begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/lissage_filtrer.png}
-    \caption{Surface plane après le passage par un filtre. Source : réaliser par Jérôme Chételat}
+    \caption{Surface plane après le passage par un filtre. Source : réalisé par Jérôme Chételat}
     \label{fig:after_las_filter}
 \end{figure}
-\section{Triangulation de Delaunay}
+\subsection{Filtre par point moyen}
 
+Ce filtre se base sur l'utilisation de l'intensité de retour d'une impulsion. Les points à retour multiple peuvent être nombreux en présence d'arbres. Au lieu d'avoir plusieurs points de retour, on les remplace par un seul point qui prend une moyenne de toutes les positions de retour de la même impulsion. En terme mathématique, on a donc : 
+$$
+P = 
+\begin{pmatrix}
+    \bar{x} \\
+    \bar{y} \\
+    \bar{z}
+\end{pmatrix}
+=
+\frac{1}{n}
+\sum_{i=0}^{n}
+\begin{pmatrix}
+   p_{i_x} \\
+   p_{iy} \\
+   p_{iz} \\
+\end{pmatrix}
+$$
+
+Où $n$ désigne le nombre de retour d'une impulsion et $p$ les points de l'impulsion.
+
+
+\section{Triangulation de Delaunay}
 La triangulation de Delaunay est une manière de créer des triangles entre des points dispersés dans l’espace.
 Cette manière de trianguler les points permet de créer un résultat plus homogène que d’autres méthodes.
 
@@ -49,14 +70,12 @@ Cette manière de trianguler les points permet de créer un résultat plus homog
     \label{fig:triangulation_example}
 \end{figure}
 
-\subsection{Principe de l'algorithme}
 Il existe plusieurs algorithmes pour recréer des triangles entre des points.
 Il s’agit de l’algorithme de Bowyer-Watson, un algorithme itératif découvert par Adrian Bowyer et David Watson.
 Le principe de ce procédé se repose sur l’ajout progressif de points dans la triangulation.
 Après chaque ajout, de nouveaux triangles sont formés à partir du point ajouté et des sommets du triangle contenant le point.
 
-\subsection{Déroulement de l'algorithme}
-Soit $\mathcal{P} \subset \mathbb{R}^2$ l'ensemble des points à trianguler et $\mathcal{T}$ les triangles appartenant à la triangulation. On construit dans un premier temps, un triangle $S \in \mathcal{T}$ tel que $\mathcal{P} \subset S$. On nomme ce triangle le "super-triangle". Il doit contenir en son sein l'ensemble de points $\mathcal{P}$. On ajoute donc trois points, les sommets de $S$ dans $\mathcal{P}$.
+Soit $\mathcal{P} \subset \mathbb{R}^2$ l'ensemble des points à trianguler et $\mathcal{T}$ les triangles appartenant à la triangulation. On construit dans un premier temps, un triangle $S \in \mathcal{T}$ tel que $\mathcal{P} \subset S$. On nomme ce triangle le "super-triangle". Il doit contenir en son sein l'ensemble des points $\mathcal{P}$. On ajoute donc trois points, les sommets de $S$ dans $\mathcal{P}$.
 
 On prend ensuite un point de $\mathcal{P}$ puis on détermine dans quel triangle il se situe.
 Pour connaître l'appartenance d'un point à un triangle, on détermine si un point est contenu dans le cercle circonscrit d'un triangle.
@@ -78,11 +97,61 @@ Pour finir, on supprime les sommets du super-triangle ainsi que ses arrêtes de 
 
 Le résultat est un ensemble de triangles $\mathcal{T}$ représentant des surfaces appelées triangulation de Delaunay.
 Ce résultat est unique pour un ensemble de points $\mathcal{P}$ donné.
-En voici un exemple ci-dessous.
+En voici un exemple dans la figure \ref{fig:example_delaunay}.
+
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/example_delaunay.png}
+    \caption{Maillage résultant d'une triangulation de delaunay. Source : réalisé par Jérôme Chételat}
+    \label{fig:example_delaunay}
+\end{figure}
+
 
 \section{Fusion de maillage}
 
-L'algorithme présenté dans cette section concerne la fusion de maillage. Dans l'application du travail de bachelor, il se peut que l'on ait déjà des triangulations existantes et que l'on souhaite afficher un résultat de la fusion des deux triangulations. Il s'agit en réalité qu'une partie d'un autre algorithme de triangulation basé sur le principe de "Divide and conquer".
+L'algorithme présenté dans cette section concerne la fusion de maillage. Dans l'application du travail de bachelor, il se peut que l'on ait déjà des triangulations existantes et que l'on souhaite afficher un résultat de la fusion des deux triangulations. Il s'agit en réalité que d'une partie d'un autre algorithme de triangulation par Lee et Scachter basé sur le principe de "Divide and conquer".
 
-\subsection{Principe de l'algorithme}
 
+
+Soit deux triangulations $M_L$ et $M_R$ linéairement séparable par une droite $g$.
+On cherche en premier les sites aux extrémités inférieures selon l'axe $y$ et on les relie par une arrête coupant la droite $g$.
+L'arrête créée est nommée "base LR". On a donc une situation similaire à l'illustration \ref{fig:base_lr}
+
+\begin{figure}[!htb]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/base_lr.png}
+    \caption{Création de la base LR entre les deux maillages. Source: réalisé par Jérôme Chételat}
+    \label{fig:base_lr}
+\end{figure}
+
+On poursuit par la recherche d'un site candidat voisin d'une des extrémités de la base LR qui respecte les conditions suivantes:
+
+\begin{enumerate}
+    \item L'angle ,dans le sens antihoraire pour un site de $M_R$ et dans le sens horaire pour un site de $M_L$, par rapport à la base LR est inférieur à 180°.
+    \item Le cercle circonscrit défini par les deux extrémités de la base et l'une des extrémités avec un candidat ne contient pas un prochain candidat potentiel en son sein.
+\end{enumerate}
+
+Si les deux conditions sont satisfaites, le site devient un candidat final pour le maillage en question.
+Si la première condition n'est pas respectée, aucun candidat pour le maillage n'est choisi et l'arrête reliant le candidat actuel avec la base est supprimé de la triangulation.
+
+Le processus de choix d'un candidat se poursuit tant qu'aucun candidat final ne soit choisi ou qu'on détermine qu'aucun candidat ne peut être choisi.
+
+Les illustrations \ref{fig:site_ML_candidate} et \ref{fig:site_MR_candidate} représente le choix d'un candidat final pour chaque maillage. Cela ne représente que la première itération.
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/site_ML.png}
+    \caption{Candidat final du maillage $M_L$. Source: réalisé par Jérôme Chételat}
+    \label{fig:site_ML_candidate}
+\end{figure}
+
+\begin{figure}[htpb!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/site_MR.png}
+    \caption{Candidat final du maillage $M_R$. Source: réalisé par Jérôme Chételat}
+    \label{fig:site_MR_candidate}
+\end{figure}
+
+Une fois que les candidats pour chaque maillage ont été déterminés, si un seul candidat final est présent, on lie le candidat par une arête avec le site de la base du maillage opposé. Dans le cas où deux candidats sont choisis, on détermine un dernier test. On vérifie qu'un candidat final n'est pas contenu dans le cercle circonscrit de l'autre. Si c'est le cas, le candidat qui contient le site dans le cercle circonscrit est alors abandonné et celui qui n'en contient pas est utilisé pour créer une nouvelle base. On peut observer que dans le la figure \ref{fig:site_ML_candidate} le site $I$ est contenus dans le cercle circonscrit formé par les points $F, E$ et $L$. Dans ce cas, le site $E$ n'est pas maintenu en tant que candidat final et une arrête entre $I$ et $F$ est créée. Celle-ci devient alors la nouvelle base.
+
+Les opérations de recherche de candidat et de création d'arêtes continuent jusqu'à ce que plus aucun candidat final ne soit obtenu.

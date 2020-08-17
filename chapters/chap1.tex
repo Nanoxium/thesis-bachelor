@@ -19,12 +19,12 @@ En connaissant la vitesse de propagation de la lumière dans l’environnement o
 du capteur. Plus précisément, il s’agit de la distance séparant le dispositif de
 mesure et un point de l’objet frappé par la lumière émise. 
 Cette opération effectuée à de multiples reprises en changeant par petit pas 
-l’angle du laser, créer des points supplémentaires qui une fois réunis,
+l’angle du laser, créer des points qui une fois réunis,
 constituent un nuage de points profilant l'environnement autour de l'instrument.
 Si l'instrument de mesure est placé sur un avion et que la source de lumière est
 dirigée vers le bas, il est ainsi possible de capturer, sous forme d'un nuage de
-points, une région du globe. Ce cas nécessite tout de fois de connaître la position
-du \gls{gps} de l'avion au moment de la capture d'un point afin de mettre en relation
+points, une région du globe. Ce cas nécessite de connaître la position
+\gls{gps} de l'avion au moment de la capture d'un point afin de mettre en relation
 tous les points à la fin de la mesure.
 Il existe différentes versions de la spécification et ce document va se concentrer sur la version un point deux.
 
@@ -51,8 +51,8 @@ L'en-tête de fichier, les enregistrements à longueur variable et les données 
     \label{tab:las_sections}
 \end{table}
 \newpage
-Dans toutes les sections, on défini les types de données dans le tableau \ref{tab:data_type}
-\begin{table}[!htb]
+Dans toutes les sections, on définit les types de données dans le tableau \ref{tab:data_type}
+\begin{table}[htbp!]
     \centering
     \begin{tabular}{|l|c|}
     \hline
@@ -66,7 +66,7 @@ Dans toutes les sections, on défini les types de données dans le tableau \ref{
     double \tablefootnote{selon le standard IEEE 754} & 8     \\ \hline
     \end{tabular}
     \caption[Type de données de la définition du format LAS]{
-        Type de données de la définition du format LAS,
+        Type de données de la définition du format LAS.
         Source: adapté de LAS Specification Version 1.2 (2008, p. 2-3)
     }
     \label{tab:data_type}
@@ -75,9 +75,9 @@ Dans toutes les sections, on défini les types de données dans le tableau \ref{
 \subsection{En-tête public}
 
 L'en-tête public comporte les métadonnées du fichier.
-Il est composé de tous les champs du tableau~\ref {tab:las_header} présent dans l'annexe~1.
-Tous les champs inutilisés doivent être remplis par des bits nuls et les champs sont tous en little endian.
-La signature de fichier doit obligatoirement contenir les quatre caractères “LASF” et est requise par la spécification.
+Il est composé de tous les champs du tableau~\ref {tab:las_header} présent dans l'annexe~1. Ils sont tous encodés en mode little endian.
+Tous les champs inutilisés doivent être remplis par des bits nuls.
+La signature de fichier doit obligatoirement contenir les quatre caractères “LASF” et celle-ci est requise par la spécification.
 Un programme lisant le fichier doit vérifier cette signature pour déterminer qu’il s’agisse bien d’un fichier \gls{las}.
 
 Parmi les champs, les facteurs $ X, Y $ et $ Z $ scale sont utilisés avec les valeurs $ X, Y$ et $Z$ offset pour obtenir des coordonnées cartésiennes des axes.
@@ -93,7 +93,7 @@ Ces valeurs sont globales au fichier. Voici la formule pour chaque coordonnée:
     Z_{coordinate}= (Z_{record} * Z_{scale}) + Z_{offset}
 \end{equation*}
 
-Les champs min et max $X, Y, Z$ sont les valeurs minimales et maximales non mise à l'échelle des données des points présent dans la dernière section du fichier.
+Les champs min et max $X, Y, Z$ sont les valeurs minimales et maximales non mises à l'échelle des données des points présents dans la dernière section du fichier.
 
 \subsection{Enregistrements à longueur variable}
 
@@ -102,7 +102,7 @@ Le nombre total d'entrées est spécifié dans le champ "Number of Variable Leng
 Ce bloc doit être lu de manière séquentielle, car chaque entrée est de taille variable.
 Chaque entrée est débutée par un en-tête de 54 octets selon le tableau \ref{tab:las_var_record_header}
 
-\begin{table}[!htb]
+\begin{table}[htbp!]
 \centering
 \begin{tabular}{|l|l|c|c|}
 \hline
@@ -120,7 +120,7 @@ Source: adapté de LAS Specification Version 1.2 (2008, p. 6)}
 \end{table}
 
 Les enregistrements peuvent provenir de sources différentes.
-Elles sont identifiées par le champ "User ID" qui est une chaîne de caractères unique et enregistrée auprès d'un organe d'identification des producteurs de données lidar afin de prévenir que deux sources différentes aie la même séquence.
+Elles sont identifiées par le champ "User ID" qui est une chaîne de caractères unique et enregistrée auprès d'un organe d'identification des producteurs de données lidar afin de prévenir que deux sources différentes aient la même séquence.
 
 Chaque utilisateur dispose de 65536 enregistrements au maximum qu'il gère de manière indépendante.
 Les identifiants des enregistrements sont renseignés dans le champ "Record ID" de l'en-tête.
@@ -135,7 +135,7 @@ Les données des points commencent à l'adresse du champ "Offset to Point Data" 
 Il existe quatre formats pour les entrées de point.
 
 Le format zéro contient les champs communs à tous. Les informations présentées sont dans le tableau \ref{tab:las_point_data}
-\begin{table}[!h]
+\begin{table}[htbp!]
 \centering
 \begin{tabular}{|l|l|c|c|}
 \hline
@@ -159,17 +159,24 @@ Source: adapté de LAS Specification Version 1.2 (2008, p. 6)}
 \label{tab:las_point_data}
 \end{table}
 
-Les points sont collectés à partir des impulsions de laser envoyées et détectées par un capteur le tout depuis un aéronef.
+Les points sont collectés à partir des impulsions de laser envoyées et détecter par un capteur le tout depuis un aéronef.
 
-% TODO : Insert image lidar instrument scheme here
+Un exemple d'appareils est celui de la figure \ref{fig:lidar_scheme}
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/lidar_schema.png}
+    \caption{Schéma représentant un instrument de mesure LIDAR. Source : tiré de réf URL02}
+    \label{fig:lidar_scheme}
+\end{figure}
 
 On peut considérer une entrée dans le fichier comme une impulsion de lumière émise lors de la mesure des points.
 Chaque impulsion peut recevoir plusieurs retours d'où le champ "Number of returns (given pulse)".
 Il est aussi nécessaire de connaître l'angle de l'appareil par rapport à l'horizon afin de corriger la position du point récolté, car seul l'angle de l'instrument de mesure ne suffit pas.
 Cet angle est en degré et allant de -90° à +90° à partir de l'aile gauche de l'aéronef dans le sens du vol.
 
-Le format un ajoute simplement des informations concernant le temps \gls{gps} à laquelle le point à été enregistré.
-% TODO: Place image here
+Le format un ajoute simplement des informations concernant le temps \gls{gps} à laquelle le point a été enregistré.
+Il est de même des autres format cependant ces information ne sont pas utiles pour ce travail.
 
 \subsection{Classification des points}
 
@@ -191,7 +198,7 @@ Si le bit cinq à un, le point a été créé par un logiciel de manière synth�
 \label{tab:las_class_byte_explanation}
 \end{table}
 
-\begin{table}[!htbp]
+\begin{table}[htbp!]
 \centering
 \begin{tabular}{|c|l|}
 \hline
@@ -214,7 +221,6 @@ Si le bit cinq à un, le point a été créé par un logiciel de manière synth�
 \label{tab:las_point_class_meaning}
 \end{table}
 
-\newpage
 \section{Fichier Stéréoligraphique}
 
 Le format de \gls{stl} est conçu par la société 3D System pour contenir des modèles d'objets tridimensionnels.
