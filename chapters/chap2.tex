@@ -6,13 +6,13 @@ Ce chapitre concerne les différents algorithmes de traitement des données du c
 \section{Filtrage de données LIDAR}
 
 L'utilité de réduire la quantité de données sauvegardées de nos jours au vu des moyens de stockage moderne employé n'est plus une occupation majeure.
-Cependant, certains systèmes restent limités en cette ressource.
-Le filtrage des données \gls{lidar} reste toutefois utile sur des systèmes plus puissants pour accélérer l'utilisation ultérieure des fichiers. Les méthodes présentées ici peuvent être utilisées indépendamment ou bien combinées.
+Cependant, certains systèmes restent limités en mémoire et c'est à ce moment qu'intervient le filtrage de données.
+Le filtrage des données \gls{lidar} est utile sur des systèmes plus puissants pour accélérer l'utilisation ultérieure des fichiers. Les méthodes présentées ici peuvent être utilisées indépendamment ou bien combinées.
 
 \subsection{Filtre par classe de point}
 Une première méthode pour filtrer les données est de se baser sur la classification des points du chapitre 1.1. En connaissant les informations qui nous intéressent, le filtrage se fait donc lors de la lecture des données.
 Étant donné que la lecture se déroule de manière séquentielle, il suffit de poser une ou plusieurs conditions vérifiant la classe du point.
-Si la condition est respectée, le point est collecté dans une liste de points à garder, le cas échéant étant simplement de l'ignorer.
+Si la ou les conditions sont respectées, le point est collecté dans une liste de points à garder, le cas échéant étant simplement de l'ignorer et de passer au suivant.
 Une fois la lecture terminée, on réécrit la liste des points gardés dans un nouveau fichier \gls{lidar}.
 Le fichier original peut être supprimé ou conservé.
 
@@ -70,6 +70,7 @@ Cette manière de trianguler les points permet de créer un résultat plus homog
     \label{fig:triangulation_example}
 \end{figure}
 
+\subsection{Bowyer-Watson}
 Il existe plusieurs algorithmes pour recréer des triangles entre des points.
 Il s’agit de l’algorithme de Bowyer-Watson, un algorithme itératif découvert par Adrian Bowyer et David Watson.
 Le principe de ce procédé se repose sur l’ajout progressif de points dans la triangulation.
@@ -95,7 +96,7 @@ On répète les opérations d'ajout de points et de création de triangles jusqu
 
 Pour finir, on supprime les sommets du super-triangle ainsi que ses arrêtes de $\mathcal{P}$ et de $\mathcal{T}$.
 
-Le résultat est un ensemble de triangles $\mathcal{T}$ représentant des surfaces appelées triangulation de Delaunay.
+Le résultat est un ensemble de triangles $\mathcal{T}$ représentant la géométrie des surfaces appelées triangulation de Delaunay.
 Ce résultat est unique pour un ensemble de points $\mathcal{P}$ donné.
 En voici un exemple dans la figure \ref{fig:example_delaunay}.
 
@@ -107,10 +108,12 @@ En voici un exemple dans la figure \ref{fig:example_delaunay}.
     \label{fig:example_delaunay}
 \end{figure}
 
+\subsection{Lee \& Scachter}
+L'algorithme de Lee et Scachter est basé sur le principe de "Divide and conquer". Le principe consiste à former des petites triangulations à partir d'un espace divisé selon un axe. On applique une triangulation pour la première itération. Ensuite, on fusionne les triangulations entre elles et l'on répète ces étapes jusqu'à ne plus pouvoir en fusionner. Le résultat final est un maillage considéré comme étant triangulation de Delaunay. 
 
 \section{Fusion de maillage}
 
-L'algorithme présenté dans cette section concerne la fusion de maillage. Dans l'application du travail de bachelor, il se peut que l'on ait déjà des triangulations existantes et que l'on souhaite afficher un résultat de la fusion des deux triangulations. Il s'agit en réalité que d'une partie d'un autre algorithme de triangulation par Lee et Scachter basé sur le principe de "Divide and conquer".
+L'algorithme présenté dans cette section concerne la fusion de maillage. Dans l'application du travail de bachelor, il se peut que l'on ait déjà des triangulations existantes et que l'on souhaite afficher un résultat de la fusion des deux triangulations. Il s'agit en réalité que d'une partie de l'algorithme de triangulation par Lee et Scachter basé sur le principe de "Divide and conquer".
 
 
 

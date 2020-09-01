@@ -38,10 +38,10 @@ pub trait LidarFilter {
 
 \end{lstlisting}
 
-Les traits sont ensuite spécialisé dans le type de filtre voulu
+Les traits sont ensuite spécialisés dans le type de filtre voulu.
 \subsection{Triangulation}
 La librairie contient un module de triangulation.
-On y trouve les implémentations des algorithmes de triangulation réalisés lors du projet de semestre et de fusion de triangulation.
+On y trouve les implémentations des algorithmes de triangulation réalisés lors du projet de semestre, mais également un algorithme de  fusion de triangulation.
 
 \subsection{Fusion de triangulation}
 Pour ce qui est de la fusion, une structure propre à la librairie était nécessaire en plus des structures de données offertes par la crates stl-io.
@@ -59,7 +59,7 @@ pub struct Mesh {
 }
 \end{lstlisting}
 
-On y trouve notamment un champ pour le voisinage du maillage qui est "neighbourhood" et son enveloppe convexe dans le champ "hull".
+La particularité de cette structure est qu'on y trouve un champ pour le voisinage du maillage qui est "neighbourhood" et second champ pour l'enveloppe convexe "hull".
 Ils sont optionnels pour maintenir une compatibilité avec les crates utilisées dans la librairie.
 Une des raisons vient du fait que lors de la lecture d'un fichier \gls{stl}, on ne retrouve pas ces champs. 
 
@@ -100,9 +100,9 @@ pub fn neighbourhood(&mut self) -> Option<Vec<HashSet<usize>>> {
 
 Elle parcourt les différents triangles du maillage et pour chaque point présent du triangle, on ajoute ses deux voisins dans une liste.
 
-Concernant le champ hull, il est possible de le calculé au travers de la crate "ncollide" qui expose une version de quickhull, un algorithme de calcule d'enveloppe convexe.
+Concernant le champ hull, aucune méthode n'est disponible dans la librairy pour en calculé. Il est possible de le calculé au travers de la crate "ncollide" qui expose une version de quickhull, un algorithme de calcule d'enveloppe convexe.
 
-La première est la recherche d'un candidat final dans un maillage. Voici la signature de la fonction:
+Une fonction intéressante est la recherche d'un candidat final dans un maillage. Voici la signature de la fonction:
 \begin{lstlisting}[language=Rust, style=boxed]
 fn get_side_candidate(
         mesh: &mut Mesh,
@@ -120,9 +120,9 @@ Une grosse partie de la fusion est réalisée dans la méthode \textbf{merge} av
 pub fn merge(&mut self, other: &mut Mesh) -> Result<Mesh, &'static str>;
 \end{lstlisting}
 
-La méthode renvoie un maillage dans le cas où toute la fusion s'est bien déroulée sinon elle renvoie un message d'erreur.
+La méthode renvoie un maillage dans le cas où toute la fusion se serait bien déroulée sinon elle renvoie un message d'erreur.
 
-Une partie intéressante de la l'implémentation est la création des arêtes entre la base et un candidat.
+Une partie intéressante de l'implémentation est la création des arêtes entre la base et un candidat.
 
 \begin{lstlisting}[language=Rust, style=boxed]
 loop {
@@ -200,7 +200,7 @@ Un point intéressant est l'utilisation de pattern matching provenant de langage
 
 \section{Utilitaires}
 
-Ce module contient les différents binaire en ligne de commande pour traiter les données. Il s'agit de l'implémentation concrète des différents algorithmes de la librairie. L'implémentation en ligne de commande utilise la crate clap. Elle facilite la mise en oeuvre de la désérialization 
+Ce module contient les  binaires en ligne de commande pour traiter les données. Il s'agit de l'implémentation concrète des différents algorithmes de la librairie. L'implémentation en ligne de commande utilise la crate clap. Elle facilite la mise en oeuvre de la désérialization. 
 
 \section{Serveur}
 
@@ -213,6 +213,6 @@ Le client web a été écrit en Rust et compilé en \gls{wasm}. Il utilise webgl
 Cette partie utilise grandement une crate appelée "web-sys" qui met à disposition des bindings pour le JavaScript.
 On utilise également la crate "nalgebra" qui propose des fonctions pour manipuler des matrices 4x4 utilisées dans les \gls{api} graphique.
 
-Une contrainte parvient en écrivant du code pour le web avec Rust est que la plupart des fonctionnalités pour amélioré le fonctionnement des modules est à ce jour encore expérimentale et de ce fait pas suffisamment stable pour créer une application complète.
+Une contrainte survient en écrivant du code pour le web avec Rust est que la plupart des fonctionnalités pour améliorer le fonctionnement des modules sont à ce jour encore expérimental et de ce fait, pas suffisamment stable pour créer une application complète.
 
-N'étant pas assez optimisé, l'affichage d'une région entière d'un fichier \gls{lidar} ou sa version triangulée est impossible malgré une implémentation en \gls{wasm} afin de bénéficié d'une performance supplémentaire par rapport à une version qui serait écrite en javascript.
+N'étant pas assez optimisé, l'affichage d'une région entière d'un fichier \gls{lidar} ou sa version triangulée est impossible malgré une implémentation en \gls{wasm} afin de bénéficié d'une performance supplémentaire par rapport à une version qui serait écrite en JavaScript.
