@@ -1,14 +1,32 @@
 % !TeX spellcheck = fr_FR
-\chapter{Chapitre 3 : Architecture de l'application et implémentations}
+\chapter{Chapitre 3 : Implémentations}
 
-L'application produite lors de ce travail de bachelor se base sur une implémentation existante de certains outils réalisés lors d'un projet de semestre. Elle est principalement réaliser dans le langage de programmation Rust qui est un langage moderne mutiparadigme, fiable, rapide et sécurisé au niveau de la mémoire. Rust utilise des outils dédiés au langage pour accélérer le développement de logiciels dont "cargo" qui est un gestionnaire de paquet et de compilation, "rustdoc", un générateur de documentation à partir du code source et "clippy", un analyseur de code qui indique des erreurs communes réalisées lors de l'écriture du code. 
+Dans ce chapitre, on détaillera l'architecture du projet 
+ainsi que les technologies et les bibliothèques utilisées
+pour développer les différentes parties de l'application.
 
-Dans la nomenclature de Rust, le mot "crate" désigne un paquet ou une librairie externe. Une particularité de Rust est le \textbf{ownership} ou la propriété des données. C'est grâce à ce principe que l'on peut avoir une mémoire sécurisé contre les fuites mémoires ou dans des logiciels multithreadés une absence de datarace.
+% L'application produite lors de ce travail de bachelor se base sur une implémentation existante de certains outils réalisés lors d'un projet de semestre.
+% Elle est principalement réaliser dans le langage de programmation Rust qui est un langage moderne mutiparadigme, fiable, rapide et sécurisé au niveau de la mémoire.
+% Rust utilise des outils dédiés au langage pour accélérer le développement de logiciels dont "cargo" qui est un gestionnaire de paquet et de compilation, "rustdoc", un générateur de documentation à partir du code source et "clippy", un analyseur de code qui indique des erreurs communes réalisées lors de l'écriture du code. 
+
+\section{Rust}
+
+Rust est un langage de programmation à usage général. C'est un langage moderne
+et mutiparadigme qui propose une fiabilité pour la mémoire sans impacter la
+performance des programmes écrit.
+Grâce au principe de \textit{ownership} ou propriété des données, Rust empêche un grand nombre de
+bugues lors de l'écriture du code. 
+Dans la nomenclature de Rust, le mot "crate" désigne un paquet ou une bibliothèque
+externe.
+Une particularité de Rust est le \textbf{ownership} ou la propriété des données.
+
 
 \section{Architecture}
+
 L'application est composée de quatre modules principaux.
+
 La librairie qui regroupe les fonctions et les structures qui sont communes à l'application.
-Le serveur expose les fichiers mis à disposition par le \gls{sitg} au travers d'un binaire dédié.
+Un serveur expose les fichiers mis à disposition par le \gls{sitg} au travers d'un binaire dédié.
 Le client web servant de visualiseur de donnée pour un utilisateur étant aussi un binaire et
 les utilitaires, contenant les entrées des programmes utilitaires en ligne de commande telle que la triangulation d'un fichier lidar ou encore la triangulation de plusieurs régions ensemble.
 
@@ -208,7 +226,8 @@ Le serveur est une application binaire qui utilise le framework actix-web. Ce fr
 
 \section{Client web}
 
-Le client web a été écrit en Rust et compilé en \gls{wasm}. Il utilise webgl pour afficher les points et les maillages. WebPack ,un bundler de frontend, a été utilisé pour liés le HTML, le JavaScript et les modules \gls{wasm}. 
+Le client web a été écrit en Rust et compilé en \gls{wasm}. Les rendu des
+maillages se fait par l'api WebGL. WebPack, un packager d'application web, a été utilisé pour liés le HTML, le JavaScript et les modules \gls{wasm}. 
 
 Cette partie utilise grandement une crate appelée "web-sys" qui met à disposition des bindings pour le JavaScript.
 On utilise également la crate "nalgebra" qui propose des fonctions pour manipuler des matrices 4x4 utilisées dans les \gls{api} graphique.
