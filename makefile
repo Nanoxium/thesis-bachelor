@@ -9,4 +9,4 @@ release:
 	pdflatex $(PAPER) -file-line-error
 
 clean:
-	rm -f *.aux *.fdb_* *.fls *.lof *.log *.lot *.out *.tex~ *.ptc 
+	rm -f *.b[bl,cf,lg] *.aux *.fdb_* *.fls *.lo[f,g,t] *.out *.tex~ *.ptc *.run.*

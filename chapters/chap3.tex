@@ -25,12 +25,23 @@ Une particularité de Rust est le \textbf{ownership} ou la propriété des donn�
 
 L'application est composée de quatre modules principaux.
 
-La librairie qui regroupe les fonctions et les structures qui sont communes à l'application.
-Un serveur expose les fichiers mis à disposition par le \gls{sitg} au travers d'un binaire dédié.
-Le client web servant de visualiseur de donnée pour un utilisateur étant aussi un binaire et
-les utilitaires, contenant les entrées des programmes utilitaires en ligne de commande telle que la triangulation d'un fichier lidar ou encore la triangulation de plusieurs régions ensemble.
+\begin{itemize}
+	\item Une bibliothèque regroupant des fonctions et des structures communes.
+	\item Des utilitaires, ce sont les outils en ligne de commande qui
+		implémentes les pipelines 
+	\item Un serveur web, celui-ci expose des fichiers pour le client web à
+		travers une api \gls{rest}
+	\item Un client web permettant à un utilisateur de visualiser des maillages
+		dans un navigateur web.
+\end{itemize}
 
-\section{Librairie}
+En ce qui concerne le module \textit{utilitaire}, le choix d'un pipeline a été
+fait. Il est composé de 4 étapes. 
+% // TODO: Put pipeline image here
+
+Chacun des utilitaires adapte ce pipeline pour traiter des données spécifique.
+
+\section{Bibliothèque}
 
 La librairie contient les outils de lecture et d'écriture de fichiers pour les formats du chapitre 2. Elle expose aussi les structures de données pour les différents algorithmes du chapitre 2.
 
@@ -43,7 +54,7 @@ Elle a comme dépendance principale les crates "stl-io" qui implémentes les str
     \label{fig:library_tree}
 \end{figure}
 
-\subsection{Filtres}
+\subsection{Nettoyage}
 Les implémentations des filtres sont dérivées du trait \textbf{MeshFilter} ou du trait \textbf{LidarFilter}. Leurs définitions sont les suivantes :
 \begin{lstlisting}[language=Rust, style=boxed]
 pub trait MeshFilter {
@@ -157,12 +168,12 @@ loop {
         (Some(l), Some(r)) => {
             // Check that one of these does not contain the other one
             let left_candidate_inside = self
-                                            .vertices[l]
-                                            .inside_circum_circle((
-                                                &self.vertices[l_bs],
-                                                &other.vertices[r_bs],
-                                                &other.vertices[r],
-                                            ));
+											.vertices[l]
+											.inside_circum_circle((
+											&self.vertices[l_bs],
+											&other.vertices[r_bs],
+											&other.vertices[r],
+											));
             let right_candidate_inside = other
                                             .vertices[r]
                                             .inside_circum_circle((
@@ -218,7 +229,10 @@ Un point intéressant est l'utilisation de pattern matching provenant de langage
 
 \section{Utilitaires}
 
-Ce module contient les  binaires en ligne de commande pour traiter les données. Il s'agit de l'implémentation concrète des différents algorithmes de la librairie. L'implémentation en ligne de commande utilise la crate clap. Elle facilite la mise en oeuvre de la désérialization. 
+Ce module contient les  binaires en ligne de commande pour traiter les données.
+Il s'agit de l'implémentation concrète des différents algorithmes de la librairie.
+Les implémentations des utilitaires sont faite à l'aide d'une crate,
+\textit{clap} pour lire les arguments de la ligne de commande.
 
 \section{Serveur}
 
