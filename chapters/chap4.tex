@@ -8,6 +8,21 @@ différentes partie de l'application.
 La triangulation implémentée nous provient en partie du projet de semestre.
 
 \section{Nettoyage}
+
 \section{Stack Web}
 \subsection{Serveur Web}
+
+Le serveur actuel permet les téléchargements de fichiers \gls{stl} présent
+
 \subsection{Client Web}
+Les tests suivants ont été effectué sur le navigateur Firefox version 81.
+Le client web permet actuellement de faire un rendu d'un maillage dans un
+navigateur web. Un fichier \gls{stl} est téléchargé à l'aide de l'api
+\textit{fetch} du navigateur au chargement de la page web.
+
+\textbf{Amélioration possible} \\
+Le chargement des vertex du maillage se faisant dans un seul file d'exécution,
+la page lors du chargement reste figée et peut ne plus répondre. Il serait
+possible dans un futur proche de faire ces opérations dans des WebWorkers. Au
+moment de l'écriture de ce mémoire, les possibilités d'utiliser des WebWorkers
+en Rust est encore expérimental.

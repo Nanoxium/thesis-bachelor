@@ -11,15 +11,17 @@ pour développer les différentes parties de l'application.
 
 \section{Rust}
 
-Rust est un langage de programmation à usage général. C'est un langage moderne
-et mutiparadigme qui propose une fiabilité pour la mémoire sans impacter la
-performance des programmes écrit.
+Rust est un langage de programmation système à usage général \footnote{Peut être
+utilisé dans l'écriture de kernels ou d'applications}. C'est un langage moderne
+et mutiparadigme.
 Grâce au principe de \textit{ownership} ou propriété des données, Rust empêche un grand nombre de
-bugues lors de l'écriture du code. 
+bogues lors de l'écriture du code. 
 Dans la nomenclature de Rust, le mot "crate" désigne un paquet ou une bibliothèque
 externe.
 Une particularité de Rust est le \textbf{ownership} ou la propriété des données.
 
+Ce langage permet une compilation vers les plateforme Windows, MacOS et Linux
+ainsi que le web grâce au \gls{wasm}. : 
 
 \section{Architecture}
 
@@ -35,17 +37,19 @@ L'application est composée de quatre modules principaux.
 		dans un navigateur web.
 \end{itemize}
 
-En ce qui concerne le module \textit{utilitaire}, le choix d'un pipeline a été
-fait. Il est composé de 4 étapes. 
+En ce qui concerne le module \textit{utilitaire}, l'architecture en pipeline est
+utilisé pour tout les binaires. Il est composé de 4 étapes. 
 % // TODO: Put pipeline image here
 
 Chacun des utilitaires adapte ce pipeline pour traiter des données spécifique.
 
 \section{Bibliothèque}
 
-La librairie contient les outils de lecture et d'écriture de fichiers pour les formats du chapitre 2. Elle expose aussi les structures de données pour les différents algorithmes du chapitre 2.
+La bibliothèque contient les outils de lecture et d'écriture de fichiers pour les formats du chapitre 2.
 
-Elle a comme dépendance principale les crates "stl-io" qui implémentes les structures pour écrire les fichiers \gls{stl} et "las-rs" qui expose les structures et méthodes liées aux données lidar.
+Elle a comme dépendance principale les crates \textit{stl-io}
+qui implémentes les structures pour écrire les fichiers \gls{stl} 
+et \textit{las-rs} qui expose les structures et méthodes liées aux données lidar.
 
 \begin{figure}[htbp!]
     \centering
@@ -168,19 +172,19 @@ loop {
         (Some(l), Some(r)) => {
             // Check that one of these does not contain the other one
             let left_candidate_inside = self
-											.vertices[l]
-											.inside_circum_circle((
-											&self.vertices[l_bs],
-											&other.vertices[r_bs],
-											&other.vertices[r],
-											));
+					.vertices[l]
+					.inside_circum_circle((
+					&self.vertices[l_bs],
+					&other.vertices[r_bs],
+					&other.vertices[r],
+					));
             let right_candidate_inside = other
-                                            .vertices[r]
-                                            .inside_circum_circle((
-                                                &self.vertices[l],
-                                                &self.vertices[l_bs],
-                                                &other.vertices[r_bs],
-                                            ));
+                    .vertices[r]
+                    .inside_circum_circle((
+                        &self.vertices[l],
+                        &self.vertices[l_bs],
+                        &other.vertices[r_bs],
+                    ));
             match (left_candidate_inside, right_candidate_inside) {
                 // If both are contained in each other
                 // it is a degenerate case and there
@@ -229,14 +233,24 @@ Un point intéressant est l'utilisation de pattern matching provenant de langage
 
 \section{Utilitaires}
 
-Ce module contient les  binaires en ligne de commande pour traiter les données.
+Ce module contient les binaires en ligne de commande pour traiter les données.
 Il s'agit de l'implémentation concrète des différents algorithmes de la librairie.
 Les implémentations des utilitaires sont faite à l'aide d'une crate,
 \textit{clap} pour lire les arguments de la ligne de commande.
 
+Voici la liste des commandes disponibles :
+\begin{itemize}
+	\item 
+\end{itemize}
+
+\subsection{mesh-filter}
+\subsection{mesh-merge}
+
 \section{Serveur}
 
-Le serveur est une application binaire qui utilise le framework actix-web. Ce framework utilise les nouvelles fonctionnalités du langage telles que les async/await sur des routes. Il s'agit donc d'une \gls{api} de \gls{rest} exposant une seule route pour récupérer les fichiers de manière statique. Un futur projet pourrait construire un service de triangulation ou encore un service de filtrage.
+Le serveur est une application binaire qui utilise le framework actix-web.
+Ce framework utilise les nouvelles fonctionnalités du langage telles que les async/await sur des routes.
+Il s'agit donc d'une \gls{api} de \gls{rest} exposant une seule route pour récupérer les fichiers de manière statique. Un futur projet pourrait construire un service de triangulation ou encore un service de filtrage.
 
 \section{Client web}
 
