@@ -56,13 +56,119 @@ Min Z                                & double                   & 8     & * \\ \
 \label{tab:las_header}
 \end{table}
 
+\chapter*{Annexe 2}
+\addcontentsline{toc}{chapter}{Annexe 2}
+
+\begin{lstlisting}[language=Rust, style=boxed]
+loop {
+    let candidate_right = Mesh::get_side_candidate(
+        other,
+        r_bs,
+        &self.vertices[l_bs]);
+    let candidate_left = Mesh::get_side_candidate(
+        self,
+        l_bs,
+        &other.vertices[r_bs]);
+    let candidates = (candidate_left, candidate_right);
+    match candidates {
+        (Some(l), Some(r)) => {
+            // Check that one of these does not contain the other one
+            let left_candidate_inside = self
+					.vertices[l]
+					.inside_circum_circle((
+					&self.vertices[l_bs],
+					&other.vertices[r_bs],
+					&other.vertices[r],
+					));
+            let right_candidate_inside = other
+                    .vertices[r]
+                    .inside_circum_circle((
+                        &self.vertices[l],
+                        &self.vertices[l_bs],
+                        &other.vertices[r_bs],
+                    ));
+            match (left_candidate_inside, right_candidate_inside) {
+                // If both are contained in each other
+                // it is a degenerate case and there
+                // is no possible outcome
+                // to have a good Delaunay triangulation
+                (false, false) => 
+                        return Err(
+                        "Edge case found about 4 co-circular points"
+                        ),
+                (true, false) => {
+                    edges.push(l);
+                    edges.push(r_bs);
+                    l_bs = l;
+                }
+                (false, true) => {
+                    edges.push(l_bs);
+                    edges.push(r);
+                    r_bs = r;
+                }
+                _ => break,
+            }
+        }
+        (Some(l), None) => {
+            // Connect it to the lr base,
+            // push the new triangle and move the l_bs reference
+            edges.push(l);
+            edges.push(r_bs);
+            l_bs = l;
+        }
+        (None, Some(r)) => {
+            // Connect it to the lr base, 
+            // push the new triangle and move the r_bs reference
+            edges.push(l_bs);
+            edges.push(r);
+            r_bs = r;
+        }
+        _ => {
+            // The merging is done if it doesn't exists anymore candidates
+            break;
+        }
+    }
+}
+\end{lstlisting}
+
 % \chapter*{Annexe 2}
 % \addcontentsline{toc}{chapter}{Annexe 2}
 % 
 % 
-% \chapter*{Annexe 3}
-% \addcontentsline{toc}{chapter}{Annexe 3}
+\chapter*{Annexe 3}
+\addcontentsline{toc}{chapter}{Annexe 3}
 
+\begin{lstlisting}[language=Rust, style=boxed]
+pub fn neighbourhood(&mut self) -> Option<Vec<HashSet<usize>>> {
+        if self.neighbourhood.is_some() {
+            return self.neighbourhood.clone();
+        }
+        let mut dict: Vec<HashSet<usize>> = 
+            vec![HashSet::new(); self.vertices.len()];
+
+        // Iterating over all triangles in the mesh
+        self.faces
+            .iter()
+            .enumerate()
+            .step_by(3)
+            .for_each(|(i, _): (usize, &usize)| {
+                // Adding the neibours of the first vertex
+                dict[self.faces[i]].insert(self.faces[i + 1]);
+                dict[self.faces[i]].insert(self.faces[i + 2]);
+
+                // Adding the neibours of the second vertex
+                dict[self.faces[i + 1]].insert(self.faces[i]);
+                dict[self.faces[i + 1]].insert(self.faces[i + 2]);
+
+                // Adding the neibours of the third vertex
+                dict[self.faces[i + 2]].insert(self.faces[i]);
+                dict[self.faces[i + 2]].insert(self.faces[i + 1]);
+            });
+
+        self.neighbourhood = Some(dict.clone());
+        Some(dict)
+}
+\end{lstlisting}
 
 %%% COMMENT THESES LINES IF YOU DO NOT USE DEDICATED TOC FOR ANNEXES
 \stopcontents[annexes]

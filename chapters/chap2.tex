@@ -1,22 +1,27 @@
 % !TeX spellcheck = fr_FR
 \chapter{Chapitre 2 : Algorithmes}
 
-Ce chapitre concerne les différents algorithmes de traitement des données du chapitre 1.
+Ce chapitre contient les différents algorithme rencontré lors de l'application 
 
 \section{Nettoyage}
 
-L'utilité de réduire la quantité de données sauvegardées de nos jours au vu des moyens de stockage moderne employé n'est plus une occupation majeure.
-Cependant, certains systèmes restent limités en mémoire et c'est à ce moment qu'intervient le filtrage de données.
-Le filtrage des données \gls{lidar} est utile sur des systèmes plus puissants pour accélérer l'utilisation ultérieure des fichiers. Les méthodes présentées ici peuvent être utilisées indépendamment ou bien combinées.
+L'utilité de réduire la quantité de données sauvegardées de nos jours au vu des 
+moyens de stockage moderne employé n'est plus une occupation majeure.
+Cependant, certains systèmes restent limités en mémoire et c'est à ce moment 
+qu'intervient le filtrage de données.
+Le nettoyage des données \gls{lidar} est utile sur des systèmes plus puissants
+pour accélérer l'utilisation ultérieure des fichiers.
+Les méthodes présentées ici peuvent être utilisées indépendamment ou bien combinées.
 
-\subsection{Filtre par classe de point}
+\subsection{Nettoyage par classe de point}
+
 Une première méthode pour filtrer les données est de se baser sur la classification des points du chapitre 1.1. En connaissant les informations qui nous intéressent, le filtrage se fait donc lors de la lecture des données.
 Étant donné que la lecture se déroule de manière séquentielle, il suffit de poser une ou plusieurs conditions vérifiant la classe du point.
 Si la ou les conditions sont respectées, le point est collecté dans une liste de points à garder, le cas échéant étant simplement de l'ignorer et de passer au suivant.
 Une fois la lecture terminée, on réécrit la liste des points gardés dans un nouveau fichier \gls{lidar}.
 Le fichier original peut être supprimé ou conservé.
 
-\subsection{Filtre par point pondéré}
+\subsection{Nettoyage par point pondéré}
 
 Une autre manière de réduire la quantité de données est de remplacer plusieurs points par un seul où l'élévation de celui-ci équivaut à la moyenne des élévations des voisins.
 En d'autres termes $$ P_{\bar{y}} = \frac{1}{n} \sum_{i=0}^{n} p_{iy} $$
@@ -57,7 +62,6 @@ P =
 $$
 
 Où $n$ désigne le nombre de retour d'une impulsion et $p$ les points de l'impulsion.
-
 
 \section{Triangulation de Delaunay}
 La triangulation de Delaunay est une manière de créer des triangles entre des points dispersés dans l’espace.
@@ -109,12 +113,12 @@ En voici un exemple dans la figure \ref{fig:example_delaunay}.
 \end{figure}
 
 \subsection{Lee \& Scachter}
+
 L'algorithme de Lee et Scachter est basé sur le principe de "Divide and conquer". Le principe consiste à former des petites triangulations à partir d'un espace divisé selon un axe. On applique une triangulation pour la première itération. Ensuite, on fusionne les triangulations entre elles et l'on répète ces étapes jusqu'à ne plus pouvoir en fusionner. Le résultat final est un maillage considéré comme étant triangulation de Delaunay. 
 
 \section{Fusion de maillage}
 
 L'algorithme présenté dans cette section concerne la fusion de maillage. Dans l'application du travail de bachelor, il se peut que l'on ait déjà des triangulations existantes et que l'on souhaite afficher un résultat de la fusion des deux triangulations. Il s'agit en réalité que d'une partie de l'algorithme de triangulation par Lee et Scachter basé sur le principe de "Divide and conquer".
-
 
 
 Soit deux triangulations $M_L$ et $M_R$ linéairement séparable par une droite $g$.
