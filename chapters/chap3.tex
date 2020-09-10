@@ -164,20 +164,53 @@ Voici la liste des commandes disponibles :
 \subsection{mesh-merge}
 
 \section{Stack Web}
+
+Cette section présente la partie concernant le web. On y détail l'implémentation
+de deux modules: le client et le serveur.
+Ces derniers forment le \textit{stack web}.
+
 \subsection{Serveur}
 
+Le serveur consiste en un binaire Rust utilisant le framework actix-web.
+Le choix de l'utilisation de ce framework a été fait pour délégué la gestion des
+requêtes reçues de bas niveau ainsi que l'utilisation simple de fonctions
+asynchrones pour gérer ces dernières.
+Il a aussi été choisi car il est le seul, au moment de l'écriture de ce mémoire,
+à utiliser que des fonctionnalités stable du langage de programmation.
+
+Le serveur est une \gls{api} \gls{rest} comprenant une route pour chaque fichier
+d'un dossier.
+Elle expose au web, les fichiers appartenant au dossier nommé \textit{regions}.
+Ce dernier pouvant être donné en argument au serveur, à son lancement.
+
+Concernant les mécanismes de \gls{cors}, on utilise une crate de actix
+s'appelant \textit{actix_cors}.
+Il s'agit d'un middleware actix s'ajoutant sur une ou plusieurs route pour
+activer les mécanismes \gls{cors}.
+% et parce qu'il se trouve être le seul framework web pour Rust
+% n'utilisant pas une version instable du compilateur de Rust. Il a aussi été
+% choisi car il permet une mise en oeuvre simple de fonctions asynchrones traitant
+% les requêtes.
 % Le serveur est une application binaire qui utilise le framework actix-web.
 % Ce framework utilise les nouvelles fonctionnalités du langage telles que les async/await sur des routes.
 % Il s'agit donc d'une \gls{api} de \gls{rest} exposant une seule route pour récupérer les fichiers de manière statique. Un futur projet pourrait construire un service de triangulation ou encore un service de filtrage.
 
 \subsection{Client}
 
-Le client web a été écrit en Rust et compilé en \gls{wasm}. Les rendu des
-maillages se fait par l'api WebGL. WebPack, un packager d'application web, a été utilisé pour liés le HTML, le JavaScript et les modules \gls{wasm}. 
+Le client web a été écrit en Rust et compilé en \gls{wasm}.
+Il permet une visualisation de maillage au travers d'un navigateur web grâce à
+la bibliothèque graphique WebGL.
+% Les rendu des maillages se fait par l'api WebGL. WebPack, un packager d'application web, a été utilisé pour liés le HTML, le JavaScript et les modules \gls{wasm}. 
 
-Cette partie utilise grandement une crate appelée "web-sys" qui met à disposition des bindings pour le JavaScript.
-On utilise également la crate "nalgebra" qui propose des fonctions pour manipuler des matrices 4x4 utilisées dans les \gls{api} graphique.
+Cette partie utilise grandement une crate appelée "web-sys" qui expose des bindings pour le JavaScript du navigateur web.
+On utilise également la crate "nalgebra" qui propose des fonctions pour manipuler des matrices 4x4 utilisées dans WebGL.
 
-Une contrainte survient en écrivant du code pour le web avec Rust est que la plupart des fonctionnalités pour améliorer le fonctionnement des modules sont à ce jour encore expérimental et de ce fait, pas suffisamment stable pour créer une application complète.
+Lorsqu'on écrit du code Rust ciblant les navigateur web, plusieurs contraintes
+doivent être respectées. La première est que \gls{wasm} étant un format sur 32
+bits, la mémoire adressable par le programme n'est que de quatre gigaoctets. Une
+seconde contrainte est que les threads n'existe pas et sont remplacer par les
+WebWorkers\footnote{Technologie des navigateurs web permettant l'exécution de
+code dans un processus en arrière plan de manière indépendante}.
+% Une contrainte survient en écrivant du code pour le web avec Rust est que la plupart des fonctionnalités pour améliorer le fonctionnement des modules sont à ce jour encore expérimental et de ce fait, pas suffisamment stable pour créer une application complète.
 
 N'étant pas assez optimisé, l'affichage d'une région entière d'un fichier \gls{lidar} ou sa version triangulée est impossible malgré une implémentation en \gls{wasm} afin de bénéficié d'une performance supplémentaire par rapport à une version qui serait écrite en JavaScript.

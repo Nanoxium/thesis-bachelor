@@ -6,22 +6,24 @@ Ce chapitre contient les différents algorithme rencontré lors de l'application
 \section{Nettoyage}
 
 L'utilité de réduire la quantité de données sauvegardées de nos jours au vu des 
-moyens de stockage moderne employé n'est plus une occupation majeure.
-Cependant, certains systèmes restent limités en mémoire et c'est à ce moment 
-qu'intervient le filtrage de données.
-Le nettoyage des données \gls{lidar} est utile sur des systèmes plus puissants
-pour accélérer l'utilisation ultérieure des fichiers.
-Les méthodes présentées ici peuvent être utilisées indépendamment ou bien combinées.
+moyens de stockage moderne employés n'est plus une occupation majeure.
+Cependant, certains systèmes d'informations restent limités en mémoire et en
+puissance de calcul notamment les smartphones ou encore les ordinateurs portable.
+Dans ces cas, 
+% c'est à ce moment qu'intervient un nettoyage de données.
+Le nettoyage des données \gls{lidar} est aussi utile sur des systèmes plus puissants
+pour accélérer l'utilisation ultérieure des fichiers par la quantité réduite
+d'information.
+Les méthodes présentées ici ne sont pas exhaustive et peuvent être utilisées
+de manière indépendante ou bien combinées ensemble.
 
-\subsection{Nettoyage par classe de point}
+\subsection{Lidar}
 
-Une première méthode pour filtrer les données est de se baser sur la classification des points du chapitre 1.1. En connaissant les informations qui nous intéressent, le filtrage se fait donc lors de la lecture des données.
-Étant donné que la lecture se déroule de manière séquentielle, il suffit de poser une ou plusieurs conditions vérifiant la classe du point.
-Si la ou les conditions sont respectées, le point est collecté dans une liste de points à garder, le cas échéant étant simplement de l'ignorer et de passer au suivant.
-Une fois la lecture terminée, on réécrit la liste des points gardés dans un nouveau fichier \gls{lidar}.
-Le fichier original peut être supprimé ou conservé.
+Les données brutes provenant des instruments \gls{lidar} contiennent souvent
+des informations bruitées et inutile. Ces dernières peuvent fausser les résultats
+finaux et prennent de la mémoire de stockage supplémentaire.
 
-\subsection{Nettoyage par point pondéré}
+\subsubsection{Nettoyage par point pondéré}
 
 Une autre manière de réduire la quantité de données est de remplacer plusieurs points par un seul où l'élévation de celui-ci équivaut à la moyenne des élévations des voisins.
 En d'autres termes $$ P_{\bar{y}} = \frac{1}{n} \sum_{i=0}^{n} p_{iy} $$
@@ -41,7 +43,8 @@ Un effet de bord de cette méthode est le lissage des surfaces plates. Un exempl
     \caption{Surface plane après le passage par un filtre. Source : réalisé par Jérôme Chételat}
     \label{fig:after_las_filter}
 \end{figure}
-\subsection{Filtre par point moyen}
+
+\subsubsection{Nettoyage par point moyen}
 
 Ce filtre se base sur l'utilisation de l'intensité de retour d'une impulsion. Les points à retour multiple peuvent être nombreux en présence d'arbres. Au lieu d'avoir plusieurs points de retour, on les remplace par un seul point qui prend une moyenne de toutes les positions de retour de la même impulsion. En terme mathématique, on a donc : 
 $$
@@ -63,7 +66,27 @@ $$
 
 Où $n$ désigne le nombre de retour d'une impulsion et $p$ les points de l'impulsion.
 
+\subsubsection{Nettoyage par classe de point lidar}
+
+Une méthode différente pour nettoyer les données est de se baser sur la 
+classification des points présentée au chapitre 1.1.
+En connaissant le type de points qui nous intéresse, il est possible de charger
+en mémoire uniquement le ou les types de points voulus. 
+% En connaissant les informations qui nous intéressent, le nettoyage se fait 
+% donc lors de la lecture des données.
+% Étant donné que la lecture se déroule de manière séquentielle, il suffit de
+% poser une ou plusieurs conditions vérifiant la classe du point.
+
+La manière de procéder est la suivante.
+Lors de la lecture du fichier lidar, la catégorie du point est testée.
+
+Une fois la lecture terminée, on réécrit la liste des points gardés dans un nouveau fichier \gls{lidar}.
+Le fichier original peut être supprimé ou conservé.
+
 \section{Triangulation de Delaunay}
+Dans cette section, on détail les algorithme de reconstruction de surface.
+Une méthode utilisé est la triangulation de Delaunay.
+Il existe plusieurs manière de créer le même résultat.
 La triangulation de Delaunay est une manière de créer des triangles entre des points dispersés dans l’espace.
 Cette manière de trianguler les points permet de créer un résultat plus homogène que d’autres méthodes.
 
@@ -75,15 +98,16 @@ Cette manière de trianguler les points permet de créer un résultat plus homog
 \end{figure}
 
 \subsection{Bowyer-Watson}
-Il existe plusieurs algorithmes pour recréer des triangles entre des points.
-Il s’agit de l’algorithme de Bowyer-Watson, un algorithme itératif découvert par Adrian Bowyer et David Watson.
-Le principe de ce procédé se repose sur l’ajout progressif de points dans la triangulation.
+Il existe plusieurs algorithmes pour créer des triangles entre des points.
+Un algorithme conceptuellement simple est celui de Bowyer-Watson.
+C'est un algorithme itératif découvert par Adrian Bowyer et David Watson.
+Le principe de ce dernier repose sur l’ajout progressif de points dans la triangulation.
 Après chaque ajout, de nouveaux triangles sont formés à partir du point ajouté et des sommets du triangle contenant le point.
 
 Soit $\mathcal{P} \subset \mathbb{R}^2$ l'ensemble des points à trianguler et $\mathcal{T}$ les triangles appartenant à la triangulation. On construit dans un premier temps, un triangle $S \in \mathcal{T}$ tel que $\mathcal{P} \subset S$. On nomme ce triangle le "super-triangle". Il doit contenir en son sein l'ensemble des points $\mathcal{P}$. On ajoute donc trois points, les sommets de $S$ dans $\mathcal{P}$.
 
 On prend ensuite un point de $\mathcal{P}$ puis on détermine dans quel triangle il se situe.
-Pour connaître l'appartenance d'un point à un triangle, on détermine si un point est contenu dans le cercle circonscrit d'un triangle.
+Pour connaître l'appartenance d'un point dans un triangle, on détermine si un point est contenu dans le cercle circonscrit dudit triangle.
 La condition qui permet de déterminer si un point $D$ est contenu dans le cercle-circonscris de $\triangle ABC$ est la suivante :
 
 $$
@@ -94,16 +118,21 @@ $$
 \end{vmatrix} \geqslant 0
 $$
 
-Si la condition est vraie, le point est relié au sommet du triangle qui le contient. Les triangles formés désormais appartiennent à $\mathcal{T}$.
+Si la condition est vraie, le point est relié au sommet du triangle qui le contient.
+Les arrête créées forment de nouveaux triangles appartenant désormais à la
+triangulation $\mathcal{T}$.
 
 On répète les opérations d'ajout de points et de création de triangles jusqu'à ce qu'on ait parcouru tous les points de $P$
 
-Pour finir, on supprime les sommets du super-triangle ainsi que ses arrêtes de $\mathcal{P}$ et de $\mathcal{T}$.
+Pour finir, on identifie les arrête reliées au sommet du super-triangle puis on
+les supprime de la triangulation $\mathcal{T}$.
+On supprime également les sommets du super-triangle ainsi que ses arrêtes de 
+$\mathcal{P}$ et de $\mathcal{T}$.
 
-Le résultat est un ensemble de triangles $\mathcal{T}$ représentant la géométrie des surfaces appelées triangulation de Delaunay.
+Le résultat est un ensemble de triangles $\mathcal{T}$ représentant la géométrie
+des surfaces. Cette dernière est appelée triangulation de Delaunay.
 Ce résultat est unique pour un ensemble de points $\mathcal{P}$ donné.
-En voici un exemple dans la figure \ref{fig:example_delaunay}.
-
+Voici un exemple de triangulation finale dans la figure \ref{fig:example_delaunay}.
 
 \begin{figure}[htbp!]
     \centering
@@ -114,7 +143,8 @@ En voici un exemple dans la figure \ref{fig:example_delaunay}.
 
 \subsection{Lee \& Scachter}
 
-L'algorithme de Lee et Scachter est basé sur le principe de "Divide and conquer". Le principe consiste à former des petites triangulations à partir d'un espace divisé selon un axe. On applique une triangulation pour la première itération. Ensuite, on fusionne les triangulations entre elles et l'on répète ces étapes jusqu'à ne plus pouvoir en fusionner. Le résultat final est un maillage considéré comme étant triangulation de Delaunay. 
+L'algorithme de Lee et Scachter est basé sur le principe de "Divide and conquer".
+Le principe consiste à former des petites triangulations à partir d'un espace divisé selon un axe. On applique une triangulation pour la première itération. Ensuite, on fusionne les triangulations entre elles et l'on répète ces étapes jusqu'à ne plus pouvoir en fusionner. Le résultat final est un maillage considéré comme étant triangulation de Delaunay. 
 
 \section{Fusion de maillage}
 
