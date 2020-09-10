@@ -16,12 +16,22 @@ utilisé dans l'écriture de kernels ou d'applications}. C'est un langage modern
 et mutiparadigme.
 Grâce au principe de \textit{ownership} ou propriété des données, Rust empêche un grand nombre de
 bogues lors de l'écriture du code. 
-Dans la nomenclature de Rust, le mot "crate" désigne un paquet ou une bibliothèque
+Dans la nomenclature de Rust, le mot "crate (" désigne un paquet ou une bibliothèque
 externe.
 Une particularité de Rust est le \textbf{ownership} ou la propriété des données.
+Ce langage permet une compilation vers les plateformes Windows, MacOS et Linux.
 
-Ce langage permet une compilation vers les plateforme Windows, MacOS et Linux
-ainsi que le web grâce au \gls{wasm}. : 
+\subsection{Rust is the new JavaScript} 
+
+Le choix du langage Rust n'est pas anodin.
+Un des buts de ce projet était d'expérimenter un stack
+web applicatif utilisant un seul langage et jusqu'à présent un langage règnait dans ce domaine.
+Il s'agit de JavaScript car depuis la naissance des sites web dynamique, il
+n'avait pas de concurrent.
+Cependant depuis l'apparition du \gls{wasm} dans les navigateurs, il n'est plus
+le seul. D'autre langage telle que le Rust compile désormais en \gls{wasm}.
+Cependant le support de cette plateforme, au moment de l'écriture de ce mémoire,
+reste encore expérimental.
 
 \section{Architecture}
 
@@ -39,7 +49,13 @@ L'application est composée de quatre modules principaux.
 
 En ce qui concerne le module \textit{utilitaire}, l'architecture en pipeline est
 utilisé pour tout les binaires. Il est composé de 4 étapes. 
-% // TODO: Put pipeline image here
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.5\linewidth]{figures/pipeline_process.png}
+    \caption{Structure de fichier présent dans le module de la librairie de l'application. Source : réalisé par Jérôme Chételat}
+    \label{fig:pipeline_process}
+\end{figure}
 
 Chacun des utilitaires adapte ce pipeline pour traiter des données spécifique.
 
@@ -59,6 +75,7 @@ et \textit{las-rs} qui expose les structures et méthodes liées aux données li
 \end{figure}
 
 \subsection{Nettoyage}
+
 Les implémentations des filtres sont dérivées du trait \textbf{MeshFilter} ou du trait \textbf{LidarFilter}. Leurs définitions sont les suivantes :
 \begin{lstlisting}[language=Rust, style=boxed]
 pub trait MeshFilter {
@@ -73,12 +90,24 @@ pub trait LidarFilter {
 
 Les traits sont ensuite spécialisés dans le type de filtre voulu.
 \subsection{Triangulation}
-La librairie contient un module de triangulation.
-On y trouve les implémentations des algorithmes de triangulation réalisés lors du projet de semestre, mais également un algorithme de  fusion de triangulation.
 
-\subsection{Fusion de triangulation}
+La librairie contient un module de triangulation.
+On y trouve les implémentations des algorithmes de triangulation réalisés lors
+du projet de semestre, mais également un algorithme de fusion de triangulation.
+
+\subsubsection{Triangulation de Bowyer-Watson}
+
+Cette implémentation est celle du projet de semestre. 
+Actuellement l'algorithme a une complexité temporel de $O(n^2)$ à cause de la 
+recherche d'appartenance d'un point à un triangle. Cependant la complexité
+pourrait théoriquement être réduite à $O(n \log(n))$ en
+utilisant un dictionnaire.
+
+\subsubsection{Fusion de triangulation}
+
 Pour ce qui est de la fusion, une structure propre à la librairie était nécessaire en plus des structures de données offertes par la crates stl-io.
 Elle est définie de la manière suivante:
+
 \begin{lstlisting}[language=Rust, style=boxed]
 pub struct Mesh {
     /// Vertices composing the mesh
@@ -153,14 +182,45 @@ l'utilitaire.
 
 Voici la liste des commandes disponibles :
 \begin{itemize}
-	\item mesh-merge
-	\item las-delaunator
-	\item las-geometry
-	\item las-filtering
-	\item las-
+	\item las-delaunator : Triangulation par l'algorithme quickhull
+	\item las-geometry : Triangulation par l'algorithme de Bowyer-Watson
+	\item las-filtering : Nettoyage de points lidar
+	\item las-sample : Prendre les $n$ premiers points d'un fichier lidar
+	\item las-map-geometry : Triangulation d'un ou plusieurs fichier
+		simultanément
+	\item mesh-merge : Fusion de maillage
+	\item mesh-smoothing : Nettoyage de maillage
+	\item mesh-subsample : Prendre qu'une partie des triangles du maillage
+	\item to-txt : Transforme un fichier lidar en simple points ascii dans le
+		format $x\ y\ z$
 \end{itemize}
 
-\subsection{mesh-filter}
+\subsection{mesh-smoothing}
+
+Le binaire ici produit permet de nettoyer le bruit qui est généré par les points
+lidar aprés une triangulation. Il agit sur les triangles d'un maillage.
+
+La commande prend en argument un fichier d'entré et un fichier de sortie. Il
+prend également en option un paramètre $\epsilon$ qui sert de critère pour
+appliqué le moyennage d'un point par rapport à ses voisins.
+
+Pour réaliser le nettoyage, on itère à travers la liste des sommets du maillage.
+Pour chaque sommet, on vérifie si la différence entre la hauteur moyenne des voisins
+et le sommet actuel est inférieur au $\epsilon$.
+Si la condition est vrai, dans ce cas on assigne la hauteur moyenne des voisins
+au sommet actuel. Le cas échéant, le sommet est simplement ignoré.
+
+L'itération se fait sur une copie des sommets du maillage pour éviter d'avoir
+des incohérences de hauteurs avec les points voisins dans le cas où un sommet
+voisin d'un autre est modifié avant ce dernier.
+
+\subsection{mesh-subsample}
+
+La commande permet de récupérer une partie des triangles d'un maillage. Elle
+prend en argument un fichier STL d'entré et un fichier STL de sortie.
+
+On crée un itérateur sur les sommets du 
+
 \subsection{mesh-merge}
 
 \section{Stack Web}
@@ -184,9 +244,12 @@ Elle expose au web, les fichiers appartenant au dossier nommé \textit{regions}.
 Ce dernier pouvant être donné en argument au serveur, à son lancement.
 
 Concernant les mécanismes de \gls{cors}, on utilise une crate de actix
-s'appelant \textit{actix_cors}.
-Il s'agit d'un middleware actix s'ajoutant sur une ou plusieurs route pour
+s'appelant \textit{actix\_cors}.
+Il s'agit d'un middleware actix s'ajoutant sur une ou plusieurs routes pour
 activer les mécanismes \gls{cors}.
+
+La lecture et le découpage en paquet d'un fichier est réalisée par un autre
+module de actix.
 % et parce qu'il se trouve être le seul framework web pour Rust
 % n'utilisant pas une version instable du compilateur de Rust. Il a aussi été
 % choisi car il permet une mise en oeuvre simple de fonctions asynchrones traitant
@@ -202,15 +265,23 @@ Il permet une visualisation de maillage au travers d'un navigateur web grâce à
 la bibliothèque graphique WebGL.
 % Les rendu des maillages se fait par l'api WebGL. WebPack, un packager d'application web, a été utilisé pour liés le HTML, le JavaScript et les modules \gls{wasm}. 
 
-Cette partie utilise grandement une crate appelée "web-sys" qui expose des bindings pour le JavaScript du navigateur web.
+Cette partie utilise grandement une crate appelée "web-sys" qui expose des bindings pour le JavaScript.
 On utilise également la crate "nalgebra" qui propose des fonctions pour manipuler des matrices 4x4 utilisées dans WebGL.
 
-Lorsqu'on écrit du code Rust ciblant les navigateur web, plusieurs contraintes
+Lorsqu'on écrit du code Rust ciblant les plateformes web, plusieurs contraintes
 doivent être respectées. La première est que \gls{wasm} étant un format sur 32
 bits, la mémoire adressable par le programme n'est que de quatre gigaoctets. Une
-seconde contrainte est que les threads n'existe pas et sont remplacer par les
-WebWorkers\footnote{Technologie des navigateurs web permettant l'exécution de
+seconde contrainte est que les threads n'existe pas pour une application web
+et sont remplacés par les WebWorkers
+\footnote{Technologie des navigateurs web permettant l'exécution de
 code dans un processus en arrière plan de manière indépendante}.
 % Une contrainte survient en écrivant du code pour le web avec Rust est que la plupart des fonctionnalités pour améliorer le fonctionnement des modules sont à ce jour encore expérimental et de ce fait, pas suffisamment stable pour créer une application complète.
 
-N'étant pas assez optimisé, l'affichage d'une région entière d'un fichier \gls{lidar} ou sa version triangulée est impossible malgré une implémentation en \gls{wasm} afin de bénéficié d'une performance supplémentaire par rapport à une version qui serait écrite en JavaScript.
+Lors du chargement de la page web, la première étape est de récupérer le fichier
+qui doit être affiché.
+Ceci est fait à partir de l'\gls{api} \textit{fetch} des
+navigateurs. On forge un objet requête en donnant le lien de téléchargement du
+fichier. Une fois téléchargé, on transforme la réponse en \textit{blob}.
+Ce dernier est ensuite casté en tableau Rust à travers la crate \textit{JsCast}.
+Enfin la lecture du fichier \gls{stl} en binaire est déléguée à la crate \textit{stl-io}.
+

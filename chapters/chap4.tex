@@ -5,7 +5,13 @@ Dans ce chapitre, nous allons détailler les résultats obtenus par les
 différentes partie de l'application.
 \section{Triangulation}
 
-La triangulation implémentée nous provient en partie du projet de semestre.
+La triangulation de Delaunay provient en grande partie du projet de semestre.
+Seule la partie fusion de maillage a été créer en supplément dans ce travail.
+
+\subsection{Algorithme de Bowyer-Watson}
+
+
+\subsection{Fusion de triangulation}
 
 \section{Nettoyage}
 
@@ -23,7 +29,7 @@ navigateur web. Un fichier \gls{stl} est téléchargé à l'aide de l'api
 
 \textbf{Amélioration possible} \\
 Le chargement des vertex du maillage se faisant dans un seul file d'exécution,
-la page lors du chargement reste figée et peut ne plus répondre. Il serait
+la page lors du chargement reste figée et peut ne plus répondre (cela. Il serait
 possible dans un futur proche de faire ces opérations dans des WebWorkers. Au
 moment de l'écriture de ce mémoire, les possibilités d'utiliser des WebWorkers
 en Rust est encore expérimental.

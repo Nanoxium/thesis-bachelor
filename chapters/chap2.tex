@@ -34,13 +34,13 @@ Un effet de bord de cette méthode est le lissage des surfaces plates. Un exempl
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/lissage_brut.png}
-    \caption{Surface plane avant le passage par un filtre. Source : réalisé par Jérôme Chételat}
+    \caption{Surface plane avant le nettoyage. Source : réalisé par Jérôme Chételat}
     \label{fig:before_las_filter}
 \end{figure}
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/lissage_filtrer.png}
-    \caption{Surface plane après le passage par un filtre. Source : réalisé par Jérôme Chételat}
+    \caption{Surface plane après le nettoyage. Source : réalisé par Jérôme Chételat}
     \label{fig:after_las_filter}
 \end{figure}
 
@@ -83,12 +83,20 @@ Lors de la lecture du fichier lidar, la catégorie du point est testée.
 Une fois la lecture terminée, on réécrit la liste des points gardés dans un nouveau fichier \gls{lidar}.
 Le fichier original peut être supprimé ou conservé.
 
+
+\subsection{Maillage}
+
+\subsection{Nettoyage de maillage}
+
+
+
 \section{Triangulation de Delaunay}
 Dans cette section, on détail les algorithme de reconstruction de surface.
-Une méthode utilisé est la triangulation de Delaunay.
-Il existe plusieurs manière de créer le même résultat.
+Il existe plusieurs manière de créer le même résultat mais une méthode utilisée est la triangulation de Delaunay.
 La triangulation de Delaunay est une manière de créer des triangles entre des points dispersés dans l’espace.
 Cette manière de trianguler les points permet de créer un résultat plus homogène que d’autres méthodes.
+On peut observer des résultats différents dans la figure
+\ref{fig:triangulation_example}
 
 \begin{figure}[htb!]
     \centering
