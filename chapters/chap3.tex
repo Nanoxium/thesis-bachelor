@@ -283,5 +283,17 @@ Ceci est fait à partir de l'\gls{api} \textit{fetch} des
 navigateurs. On forge un objet requête en donnant le lien de téléchargement du
 fichier. Une fois téléchargé, on transforme la réponse en \textit{blob}.
 Ce dernier est ensuite casté en tableau Rust à travers la crate \textit{JsCast}.
-Enfin la lecture du fichier \gls{stl} en binaire est déléguée à la crate \textit{stl-io}.
+La lecture du fichier \gls{stl} en binaire est déléguée à la crate \textit{stl-io}.
+
+On récupère les vertex du maillage ainsi que les indices des sommets qui forment les
+triangles. On récupère aussi les normales des triangles. Ils nous permettront de
+faire le calcule des ombrages.
+
+On créer ensuite un vertex buffer object pour chaque objet récupéré du
+maillage, puis l'on transfert les données dans les buffer respectifs.
+Cette dernière opération en Rust est dans un bloc \textit{unsafe} car on déréférence des
+pointeurs dans la mémoire du navigateur.
+Enfin on crée les matrices de projection, de vue et de transformation 
+puis on les transfert également dans des zones mémoires graphique.
+Enfin on ordonne de faire un rendu à l'écran.
 

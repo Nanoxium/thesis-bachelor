@@ -85,10 +85,13 @@ Le fichier original peut être supprimé ou conservé.
 
 
 \subsection{Maillage}
+On appelle maillage le résultat d'une reconstruction de surface. On peut aussi
+l'appeler triangulation.
 
 \subsection{Nettoyage de maillage}
 
-
+Le nettoyage de maillage repose sur le principe de la hauteur moyenne des
+voisins.
 
 \section{Triangulation de Delaunay}
 Dans cette section, on détail les algorithme de reconstruction de surface.
@@ -101,22 +104,44 @@ On peut observer des résultats différents dans la figure
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/triangulation-example.png}
-    \caption{Deux triangulations du même jeu de données. Source : tiré de ref URL01}
+    \caption{Deux triangulations appliquées sur même jeu de données. Source : tiré de ref URL01}
     \label{fig:triangulation_example}
 \end{figure}
 
 \subsection{Bowyer-Watson}
-Il existe plusieurs algorithmes pour créer des triangles entre des points.
-Un algorithme conceptuellement simple est celui de Bowyer-Watson.
+L'algorithme de Bowyer-Watson est conceptuellement simple.
 C'est un algorithme itératif découvert par Adrian Bowyer et David Watson.
 Le principe de ce dernier repose sur l’ajout progressif de points dans la triangulation.
 Après chaque ajout, de nouveaux triangles sont formés à partir du point ajouté et des sommets du triangle contenant le point.
 
-Soit $\mathcal{P} \subset \mathbb{R}^2$ l'ensemble des points à trianguler et $\mathcal{T}$ les triangles appartenant à la triangulation. On construit dans un premier temps, un triangle $S \in \mathcal{T}$ tel que $\mathcal{P} \subset S$. On nomme ce triangle le "super-triangle". Il doit contenir en son sein l'ensemble des points $\mathcal{P}$. On ajoute donc trois points, les sommets de $S$ dans $\mathcal{P}$.
+Soit $\mathcal{P} \subset \mathbb{R}^2$ l'ensemble des points à trianguler et $\mathcal{T}$ les triangles appartenant à la triangulation.
+On construit dans un premier temps, un triangle $S \in \mathcal{T}$ tel que $\mathcal{P} \subset S$.
+On nomme ce triangle le "super-triangle".
+Il doit contenir en son sein l'ensemble des points $\mathcal{P}$. On ajoute donc trois points, les sommets de $S$ dans $\mathcal{P}$.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.66\linewidth]{figures/bowyer-watson/step_3.png}
+	\caption{Création du super-triangle englobant l'ensemble de points $\mathcal{P}$. Source : réalisé par
+	Jérôme Chételat}
+	\label{fig:triangulation_step_3}
+\end{figure}
 
 On prend ensuite un point de $\mathcal{P}$ puis on détermine dans quel triangle il se situe.
 Pour connaître l'appartenance d'un point dans un triangle, on détermine si un point est contenu dans le cercle circonscrit dudit triangle.
 La condition qui permet de déterminer si un point $D$ est contenu dans le cercle-circonscris de $\triangle ABC$ est la suivante :
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.66\linewidth]{figures/bowyer-watson/step_4.png}
+    \caption{Ajout du premier points de dans la triangulation. Source : réalisé par
+	Jérôme Chételat}
+	\label{fig:triangulation_step_4}
+\end{figure}
+
+
+
+
 
 $$
 \begin{vmatrix}
@@ -128,14 +153,24 @@ $$
 
 Si la condition est vraie, le point est relié au sommet du triangle qui le contient.
 Les arrête créées forment de nouveaux triangles appartenant désormais à la
-triangulation $\mathcal{T}$.
+triangulation $\mathcal{T}$. Dans le cas de la première itération, on a le
+résultat intermédiaire dans la figure \ref{fig:triangulation_step_5}.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.66\linewidth]{figures/bowyer-watson/step_5.png}
+    \caption{Ajout des arrêtes reliant les sommets du super-triangle au point
+		ajouté dans la triangulation. Source : réalisé par
+	Jérôme Chételat}
+	\label{fig:triangulation_step_5}
+\end{figure}
 
 On répète les opérations d'ajout de points et de création de triangles jusqu'à ce qu'on ait parcouru tous les points de $P$
 
-Pour finir, on identifie les arrête reliées au sommet du super-triangle puis on
+Pour finir, on identifie les arrêtes reliées aux sommets du super-triangle puis on
 les supprime de la triangulation $\mathcal{T}$.
 On supprime également les sommets du super-triangle ainsi que ses arrêtes de 
-$\mathcal{P}$ et de $\mathcal{T}$.
+$\mathcal{P}$ et de $\mathcal{T}$. 
 
 Le résultat est un ensemble de triangles $\mathcal{T}$ représentant la géométrie
 des surfaces. Cette dernière est appelée triangulation de Delaunay.
@@ -152,12 +187,16 @@ Voici un exemple de triangulation finale dans la figure \ref{fig:example_delauna
 \subsection{Lee \& Scachter}
 
 L'algorithme de Lee et Scachter est basé sur le principe de "Divide and conquer".
-Le principe consiste à former des petites triangulations à partir d'un espace divisé selon un axe. On applique une triangulation pour la première itération. Ensuite, on fusionne les triangulations entre elles et l'on répète ces étapes jusqu'à ne plus pouvoir en fusionner. Le résultat final est un maillage considéré comme étant triangulation de Delaunay. 
+Le principe consiste à former des petites triangulations à partir d'un espace divisé selon un axe.
+On applique une triangulation pour la première itération.
+Ensuite, on fusionne les triangulations entre elles et l'on répète ces étapes jusqu'à ne plus pouvoir en fusionner.
+Le résultat final est un maillage considéré comme étant triangulation de Delaunay. 
 
 \section{Fusion de maillage}
 
-L'algorithme présenté dans cette section concerne la fusion de maillage. Dans l'application du travail de bachelor, il se peut que l'on ait déjà des triangulations existantes et que l'on souhaite afficher un résultat de la fusion des deux triangulations. Il s'agit en réalité que d'une partie de l'algorithme de triangulation par Lee et Scachter basé sur le principe de "Divide and conquer".
-
+L'algorithme présenté dans cette section concerne la fusion de maillage.
+Dans l'application du travail de bachelor, il se peut que l'on ait déjà des triangulations existantes et que l'on souhaite afficher un résultat de la fusion des deux triangulations.
+Il s'agit en réalité que d'une partie de l'algorithme de triangulation par Lee et Scachter basé sur le principe de "Divide and conquer".
 
 Soit deux triangulations $M_L$ et $M_R$ linéairement séparable par une droite $g$.
 On cherche en premier les sites aux extrémités inférieures selon l'axe $y$ et on les relie par une arrête coupant la droite $g$.
