@@ -52,7 +52,7 @@ utilisé pour tout les binaires. Il est composé de 4 étapes.
 
 \begin{figure}[htbp!]
     \centering
-    \includegraphics[width=0.5\linewidth]{figures/pipeline_process.png}
+    \includegraphics[width=0.7\linewidth]{figures/pipeline_process.png}
     \caption{Structure de fichier présent dans le module de la librairie de l'application. Source : réalisé par Jérôme Chételat}
     \label{fig:pipeline_process}
 \end{figure}
@@ -97,11 +97,16 @@ du projet de semestre, mais également un algorithme de fusion de triangulation.
 
 \subsubsection{Triangulation de Bowyer-Watson}
 
-Cette implémentation est celle du projet de semestre. 
-Actuellement l'algorithme a une complexité temporel de $O(n^2)$ à cause de la 
-recherche d'appartenance d'un point à un triangle. Cependant la complexité
-pourrait théoriquement être réduite à $O(n \log(n))$ en
-utilisant un dictionnaire.
+L'implémentation a été faite lors du projet de semestre. 
+Actuellement l'algorithme a une complexité temporelle de $O(n^2)$ à cause de la 
+recherche d'appartenance d'un point à un triangle qui itère à travers tout les
+triangles de la triangulation jusqu'à trouver le triangle contenant le point.
+
+Dans ce travail, l'optimisation de cet algorithme n'était pas demandé.
+Cependant la complexité pourrait théoriquement être réduite à $O(n \log(n))$ en
+utilisant une structure de données tel qu'un arbre ou un dictionnaire
+qui enregistrerait la position des centres des
+cercles-circonscris de chaque triangle créé et parcouru.
 
 \subsubsection{Fusion de triangulation}
 
@@ -216,13 +221,35 @@ voisin d'un autre est modifié avant ce dernier.
 
 \subsection{mesh-subsample}
 
-La commande permet de récupérer une partie des triangles d'un maillage. Elle
+La commande permet de décimer un maillage. Elle
 prend en argument un fichier STL d'entré et un fichier STL de sortie.
+Elle prend encore en paramètres optionnels un type de filtre à appliquer.
 
-On crée un itérateur sur les sommets du 
+Le paramètre du choix de la méthode de décimation est un nombre.
+
+\begin{enumerate}
+	\item Décimation par rapport à la distance
+	\item Décimation aléatoire
+\end{enumerate}
+
+Par défaut, si aucune méthode n'est choisie, on applique la décimation selon la
+distance.
+
+On crée un itérateur sur les sommets présent dans le fichier STL. Ensuite on
+calcule la distance euclidiènne par rapport au voisin de chaque sommet.
+Si elle se trouve être inférieur à la valeur de $\epsilon$, on supprime le
+sommet. Après avoir déterminer les sommets qui sont à garder, on applique à
+nouveau une triangulation quickhull de la crate \textit{delaunator-rs}. Enfin on
+retourne le nouveau maillage contenant moins de sommets. 
+Une autre manière de
+choisir quelle points sont supprimé est de le faire aléatoirement.
 
 \subsection{mesh-merge}
 
+Cette commande permet à un utilisateur de créer une triangulation à
+partir de la fusion de deux triangulation existante. Cet outil est
+particulièrement utile lors de lorsque l'on a déjà une partie des points lidar
+sous forme de maillage.
 \section{Stack Web}
 
 Cette section présente la partie concernant le web. On y détail l'implémentation

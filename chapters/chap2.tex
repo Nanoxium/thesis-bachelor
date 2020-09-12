@@ -1,7 +1,12 @@
 % !TeX spellcheck = fr_FR
 \chapter{Chapitre 2 : Algorithmes}
 
-Ce chapitre contient les différents algorithme rencontré lors de l'application 
+Ce chapitre contient les différents algorithmes que nous avons décidé d'implémenter dans notre application.
+Nous allons premièrement expliquer comment nettoyer les lidars à l'aide de
+l'algorithme de nettoyage par point pondéré et de nettoyage par point moyen,
+ensuite nous allons parler du fonctionnement de l'algorithme de triangulation de 
+Delaunay et pour terminer nous vous expliquerons l'algorithme de fusion de 
+maillage que l'on a implémenté.
 
 \section{Nettoyage}
 
@@ -20,17 +25,113 @@ de manière indépendante ou bien combinées ensemble.
 \subsection{Lidar}
 
 Les données brutes provenant des instruments \gls{lidar} contiennent souvent
-des informations bruitées et inutile. Ces dernières peuvent fausser les résultats
-finaux et prennent de la mémoire de stockage supplémentaire.
+des informations bruitées et inutile.
+Ces dernières peuvent fausser les résultats finaux et prennent de la mémoire
+de stockage supplémentaire.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/lidar noise.png}
+    \caption{Bruit sur des données lidar. Source : tiré de ref URL01}
+	\label{fig:lidar_noise}
+\end{figure}
+
+Les méthodes de nettoyage présenté ici ce concentre sur les impulsions à retour
+multiple vu au chapitre 1.
+
+Une impulsion peut donc avoir plusieurs retours. Cela est dû au fait que la
+lumière frappe des objets superposés verticalement. Comme on peut le voir sur 
+la figure \ref{fig:lidar_echo}
+
+\begin{figure}[htbp!]
+    \centering
+	\includegraphics[width=0.8\linewidth]{figures/lidar_echo.png}
+	\caption{Retours d'une impulsion de lidar. Source : tiré de ref URL04}
+	\label{fig:lidar_echo}
+\end{figure}
+
+
+
+\subsubsection{Nettoyage par point moyen}
+
+Ce filtre se base sur la moyenne de position des points d'une impulsion.
+Ces impulsions à retour multiple peuvent être nombreux en présence d'arbres.
+À la place d'avoir plusieurs échos, on les remplace par un seul point qui est la
+position moyenne des retours.
+
+En terme mathématique, on a donc : 
+$$
+P = 
+\begin{pmatrix}
+    \bar{x} \\
+    \bar{y} \\
+    \bar{z}
+\end{pmatrix}
+=
+\frac{1}{n}
+\sum_{i=0}^{n}
+\begin{pmatrix}
+   p_{ix} \\
+   p_{iy} \\
+   p_{iz} \\
+\end{pmatrix}
+$$
+
+Où $n$ désigne le nombre de retour d'une impulsion et $p$ les points de l'impulsion.
+
+
 
 \subsubsection{Nettoyage par point pondéré}
 
-Une autre manière de réduire la quantité de données est de remplacer plusieurs points par un seul où l'élévation de celui-ci équivaut à la moyenne des élévations des voisins.
-En d'autres termes $$ P_{\bar{y}} = \frac{1}{n} \sum_{i=0}^{n} p_{iy} $$
-où $n$ est le nombre de voisins d'un point $P$. 
-Le choix de l'endroit où l'on créera le point peut être déterminé à l'aide d'une condition, p. ex. $$\sum_{i=0}^n dist(P, p_i) \geq \epsilon$$
+Une autre méthode similaire au point moyen consiste à refaire la moyenne des
+position des voisins mais pondérée par l'intensité d'un retour.
+% En d'autres termes $$ P_{\bar{y}} = \frac{1}{n} \sum_{i=0}^{n} p_{iy} $$
+% où $n$ est le nombre de voisins d'un point $P$. 
+% Le choix de l'endroit où l'on créera le point peut être déterminé à l'aide d'une condition,
+% p. ex. $$\sum_{i=0}^n dist(P, p_i) \geq \epsilon$$
 
-Un effet de bord de cette méthode est le lissage des surfaces plates. Un exemple serait les illustrations \ref{fig:before_las_filter} et \ref{fig:after_las_filter} où l'on peut observer qu'après une reconstruction de surface, on aperçoit que les points on une tendance à moins osciller dans l'axe vertical.
+\subsubsection{Nettoyage par classe de points lidar}
+
+Une méthode différente pour nettoyer les données est de se baser sur la 
+classification des points présentée au chapitre 1.1.
+La classification est données sur chaque point.
+En connaissant le type de points qui nous intéresse, il est possible de charger
+en mémoire uniquement le ou les types de points voulus. 
+% En connaissant les informations qui nous intéressent, le nettoyage se fait 
+% donc lors de la lecture des données.
+% Étant donné que la lecture se déroule de manière séquentielle, il suffit de
+% poser une ou plusieurs conditions vérifiant la classe du point.
+
+\subsection{Maillage}
+\subsubsection{Nettoyage de maillage}
+
+Dans cette partie, on nettoie le bruit sur les grandes surfaces planes.
+Plus concrètement on lisse les surfaces planes en observant les changements
+d'élévation entre les sites afin de déterminer si ce changement est du bruit ou
+bien un réel changement de géométrie.
+
+On procède de la manière suivante. 
+Si la différence de hauteur entre la moyenne des voisins et le site actuel est
+supérieur à un $\epsilon$ on applique un changement de hauteur sur le site
+actuel.
+En d'autre termes :
+
+$$
+P_z = 
+\left \{
+	\begin{array}{l}
+		\overline{V_z}\text{ si } \overline{V_z} - P_z < \epsilon \\ 
+		P_z 
+	\end{array}
+\right .
+$$
+
+Où $\overline{V_z}$ est l'élévation moyenne des voisins du site $P$
+
+On peut observer le résultat de cette méthode dans les illustrations \ref{fig:before_las_filter} et
+\ref{fig:after_las_filter}.
+On aperçoit que les points on tendance à moins osciller dans l'axe vertical.
+
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/lissage_brut.png}
@@ -44,55 +145,6 @@ Un effet de bord de cette méthode est le lissage des surfaces plates. Un exempl
     \label{fig:after_las_filter}
 \end{figure}
 
-\subsubsection{Nettoyage par point moyen}
-
-Ce filtre se base sur l'utilisation de l'intensité de retour d'une impulsion. Les points à retour multiple peuvent être nombreux en présence d'arbres. Au lieu d'avoir plusieurs points de retour, on les remplace par un seul point qui prend une moyenne de toutes les positions de retour de la même impulsion. En terme mathématique, on a donc : 
-$$
-P = 
-\begin{pmatrix}
-    \bar{x} \\
-    \bar{y} \\
-    \bar{z}
-\end{pmatrix}
-=
-\frac{1}{n}
-\sum_{i=0}^{n}
-\begin{pmatrix}
-   p_{i_x} \\
-   p_{iy} \\
-   p_{iz} \\
-\end{pmatrix}
-$$
-
-Où $n$ désigne le nombre de retour d'une impulsion et $p$ les points de l'impulsion.
-
-\subsubsection{Nettoyage par classe de point lidar}
-
-Une méthode différente pour nettoyer les données est de se baser sur la 
-classification des points présentée au chapitre 1.1.
-En connaissant le type de points qui nous intéresse, il est possible de charger
-en mémoire uniquement le ou les types de points voulus. 
-% En connaissant les informations qui nous intéressent, le nettoyage se fait 
-% donc lors de la lecture des données.
-% Étant donné que la lecture se déroule de manière séquentielle, il suffit de
-% poser une ou plusieurs conditions vérifiant la classe du point.
-
-La manière de procéder est la suivante.
-Lors de la lecture du fichier lidar, la catégorie du point est testée.
-
-Une fois la lecture terminée, on réécrit la liste des points gardés dans un nouveau fichier \gls{lidar}.
-Le fichier original peut être supprimé ou conservé.
-
-
-\subsection{Maillage}
-On appelle maillage le résultat d'une reconstruction de surface. On peut aussi
-l'appeler triangulation.
-
-\subsection{Nettoyage de maillage}
-
-Le nettoyage de maillage repose sur le principe de la hauteur moyenne des
-voisins.
-
 \section{Triangulation de Delaunay}
 Dans cette section, on détail les algorithme de reconstruction de surface.
 Il existe plusieurs manière de créer le même résultat mais une méthode utilisée est la triangulation de Delaunay.
@@ -104,7 +156,7 @@ On peut observer des résultats différents dans la figure
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/triangulation-example.png}
-    \caption{Deux triangulations appliquées sur même jeu de données. Source : tiré de ref URL01}
+    \caption{Deux triangulations appliquées sur même jeu de données. Source : tiré de ref URL03}
     \label{fig:triangulation_example}
 \end{figure}
 
@@ -139,10 +191,6 @@ La condition qui permet de déterminer si un point $D$ est contenu dans le cercl
 	\label{fig:triangulation_step_4}
 \end{figure}
 
-
-
-
-
 $$
 \begin{vmatrix}
  A_x - D_x & A_y - D_y & (A_x - D_x)^2 + (A_y - D_y)^2 \\
@@ -170,27 +218,37 @@ On répète les opérations d'ajout de points et de création de triangles jusqu
 Pour finir, on identifie les arrêtes reliées aux sommets du super-triangle puis on
 les supprime de la triangulation $\mathcal{T}$.
 On supprime également les sommets du super-triangle ainsi que ses arrêtes de 
-$\mathcal{P}$ et de $\mathcal{T}$. 
+$\mathcal{P}$ et de $\mathcal{T}$. Exemple de l'identification des arrêtes
+dans la figure \ref{fig:triangulation_step_9}
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.66\linewidth]{figures/bowyer-watson/step_9.png}
+    \caption{Identification des arrêtes liées aux sommets du super-triangle en
+		rouge . Source : réalisé par
+	Jérôme Chételat}
+	\label{fig:triangulation_step_9}
+\end{figure}
 
 Le résultat est un ensemble de triangles $\mathcal{T}$ représentant la géométrie
 des surfaces. Cette dernière est appelée triangulation de Delaunay.
 Ce résultat est unique pour un ensemble de points $\mathcal{P}$ donné.
-Voici un exemple de triangulation finale dans la figure \ref{fig:example_delaunay}.
+On peut observer le résultat de la triangulation dans la figure \ref{fig:triangulation_step_10}.
 
 \begin{figure}[htbp!]
     \centering
-    \includegraphics[width=0.8\linewidth]{figures/example_delaunay.png}
+    \includegraphics[width=0.66\linewidth]{figures/bowyer-watson/step_10.png}
     \caption{Maillage résultant d'une triangulation de delaunay. Source : réalisé par Jérôme Chételat}
-    \label{fig:example_delaunay}
+	\label{fig:triangulation_step_10}
 \end{figure}
 
-\subsection{Lee \& Scachter}
+\subsection{Lee \& Schachter}
 
-L'algorithme de Lee et Scachter est basé sur le principe de "Divide and conquer".
+L'algorithme de Lee et Schachter est basé sur le principe de "Divide and conquer".
 Le principe consiste à former des petites triangulations à partir d'un espace divisé selon un axe.
 On applique une triangulation pour la première itération.
 Ensuite, on fusionne les triangulations entre elles et l'on répète ces étapes jusqu'à ne plus pouvoir en fusionner.
-Le résultat final est un maillage considéré comme étant triangulation de Delaunay. 
+Le résultat final est un maillage considéré comme triangulation de Delaunay. 
 
 \section{Fusion de maillage}
 

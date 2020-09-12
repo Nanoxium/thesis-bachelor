@@ -1,15 +1,28 @@
 % !TeX spellcheck = fr_FR
 
 \chapter{Chapitre 4 : Résultats}
-Dans ce chapitre, nous allons détailler les résultats obtenus par les
-différentes partie de l'application.
+Dans ce chapitre, nous allons voir les résultats obtenus par les
+différentes parties de l'application. On va aussi comparer les différentes
+métriques collectés des binaires.
+
+Les tests suivants ont été réaliser principalement sur la configuration d'ordinateur
+se trouvant dans la figure \ref{fig:computer_configuration} en annexe 4.
+
 \section{Triangulation}
 
 La triangulation de Delaunay provient en grande partie du projet de semestre.
-Seule la partie fusion de maillage a été créer en supplément dans ce travail.
+Seule la partie fusion de maillage a été implémenté dans ce travail.
+
+Pour la triangulation, on utilise deux fichiers.
+\begin{itemize}
+	\item Le fichier 2501500_1112000.las du jeu de données des \gls{sitg} contenant 9'000'987 points
+	\item Un fichier contenant que les 100'000 premiers points du fichier précédent.
+\end{itemize}
 
 \subsection{Algorithme de Bowyer-Watson}
 
+
+La commande prend en moyenne 6.55 
 
 \subsection{Fusion de triangulation}
 
@@ -22,14 +35,16 @@ Le serveur actuel permet les téléchargements de fichiers \gls{stl} présent da
 un dossier spécifique. 
 
 \subsection{Client Web}
-Les tests suivants ont été effectué sur le navigateur Firefox version 81.
+Les tests suivants ont été effectué sur les navigateur Firefox version 81 et
+Chromium version.
 Le client web permet actuellement de faire un rendu d'un maillage dans un
 navigateur web. Un fichier \gls{stl} est téléchargé à l'aide de l'api
 \textit{fetch} du navigateur au chargement de la page web.
 
 \textbf{Amélioration possible} \\
 Le chargement des vertex du maillage se faisant dans un seul file d'exécution,
-la page lors du chargement reste figée et peut ne plus répondre (cela. Il serait
-possible dans un futur proche de faire ces opérations dans des WebWorkers. Au
+la page lors du chargement reste figée et peut ne plus répondre (dépend de la
+puissance de l'hôte) .
+Il serait possible dans un futur proche de faire ces opérations dans des WebWorkers. Au
 moment de l'écriture de ce mémoire, les possibilités d'utiliser des WebWorkers
 en Rust est encore expérimental.
