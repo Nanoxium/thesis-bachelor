@@ -1,12 +1,5 @@
-% !TeX spellcheck = fr_FR
-\chapter{Chapitre 1 : Données et format de fichier}
-
-% \begin{center}
-% 	\textit{Chaque chapitre doit commencer sur une nouvelle page.}\\*[35pt]
-% \end{center}
-
 Dans ce chapitre nous allons aborder les différents formats de données qui seront
-et utilisé dans la suite de ce document.
+et utilisés dans la suite de ce document.
 
 \section{Nuage de point}
 Un nuage de points est un ensemble de points de données dans un système de
@@ -98,9 +91,9 @@ Les champs min et max $X, Y, Z$ sont les valeurs minimales et maximales non mise
 
 \subsection{Enregistrements à longueur variable}
 
-Ce bloc suit directement l'en-tête de fichier et peut avoir une ou plusieurs entrées.
-Le nombre total d'entrées est spécifié dans le champ "Number of Variable Length Records" de l'en-tête de fichier.
-Ce bloc doit être lu de manière séquentielle, car chaque entrée est de taille variable.
+Ce bloc suit directement l'en-tête public et peut avoir une ou plusieurs entrées.
+Le nombre total d'entrées est spécifié dans le champ "Number of Variable Length Records" de l'en-tête.
+Il doit être lu de manière séquentielle pour cause, la taille variable des données l'impose.
 Chaque entrée est débutée par un en-tête de 54 octets selon le tableau \ref{tab:las_var_record_header}
 
 \begin{table}[htbp!]
@@ -177,7 +170,7 @@ Il est aussi nécessaire de connaître l'angle de l'appareil par rapport à l'ho
 Cet angle est en degré et allant de -90° à +90° à partir de l'aile gauche de l'aéronef dans le sens du vol.
 
 Le format un ajoute simplement des informations concernant le temps \gls{gps} à laquelle le point a été enregistré.
-Il est de même des autres format cependant ces information ne sont pas utiles pour ce travail.
+Il est de même des autres format cependant ces informations ne sont pas utiles pour ce travail.
 
 \subsection{Classification des points}
 
@@ -231,7 +224,7 @@ une représentation graphique numérique.
 
 \subsection{Fichier Stéréoligraphique}
 
-Le format de \gls{stl} est conçu par la société 3D System pour contenir des maillage d'objets tridimensionnels.
+Le format de \gls{stl} est conçu par la société 3D System pour contenir des maillages.
 Il a été pensé pour permettre un prototypage rapide dans les logiciels de \gls{cao}. 
 Ce format ne décrit que la géométrie de la surface d'un modèle.
 Il existe un format binaire et un format ASCII, le dernier laissant une empreinte dans la mémoire morte plus conséquente.

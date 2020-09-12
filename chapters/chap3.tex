@@ -110,7 +110,7 @@ cercles-circonscris de chaque triangle créé et parcouru.
 
 \subsubsection{Fusion de triangulation}
 
-Pour ce qui est de la fusion, une structure propre à la librairie était nécessaire en plus des structures de données offertes par la crates stl-io.
+Pour la fusion, une structure propre à la librairie était nécessaire en plus des structures de données offertes par la crates \textit{stl-io}.
 Elle est définie de la manière suivante:
 
 \begin{lstlisting}[language=Rust, style=boxed]
@@ -126,20 +126,24 @@ pub struct Mesh {
 }
 \end{lstlisting}
 
-La particularité de cette structure est qu'on y trouve un champ pour le voisinage du maillage qui est "neighbourhood" et second champ pour l'enveloppe convexe "hull".
+Une particularité de cette structure est qu'on y trouve un champ pour le voisinage du maillage qui est "neighbourhood" et second champ pour l'enveloppe convexe "hull".
 Ils sont optionnels pour maintenir une compatibilité avec les crates utilisées dans la librairie.
 Une des raisons vient du fait que lors de la lecture d'un fichier \gls{stl}, on ne retrouve pas ces champs. 
 
 Une méthode utile pour s'assurer de la présence d'un voisinage est d'appeler la fonction neighbourhood.
-Elle renvoie le voisinage d'un maillage s'il est déjà présent, le cas échéant est de calculer les voisins.
+Elle renvoie le voisinage d'un maillage s'il est déjà présent, le cas échéant est de le calculer.
 
 Son implémentation est disponible dans l'annexe 3. 
-Elle parcourt les différents triangles du maillage et pour chaque point présent du triangle, on ajoute ses deux voisins dans une liste.
+On parcourt les différents triangles du maillage et pour chaque point présent du triangle, on ajoute ses deux voisins dans un set.
+
+Le set permet de prévenir les duplications de même voisin pour un site. Ce set est ensuite indexé selon le site actuel.
+
+Une fois tout les triangles parcouru, on assigne au maillage le voisinage et l'on renvoie une copie.
 
 Cette dernière peut cependant
 être améliorée, car actuellement, une copie du voisinage est renvoyée à
-l'appelant. Ce qui à pour effet de créer des données dupliquées. Ce choix a été
-fait, car l'utilisation du voisinage dans un algorithme de fusion nécessite de
+l'appelant. Ce qui à pour effet de créer des données dupliquées dans la mémoire.
+Le choix de la copie a été fait, car l'utilisation du voisinage dans un algorithme de fusion nécessite de
 muter certaines parties. Une solution pour éviter ces duplications serait de créer
 une structure indiquant les parties qui ont muté et de rendre la structure Mesh
 immutable. Lors d'un prochain appel de la fonction, cette dernière pourrait

@@ -89,19 +89,21 @@ pour appliquer la fusion.
 
 Le nettoyage de points est effectué sur deux fichiers lidars:
 \begin{enumerate}
-    \item  2488500\_1111500.las
+    \item 2488500\_1111500.las
+    \item 2499000\_1118000.las
 \end{enumerate}
 
 Pour les maillages on effectue les tests sur deux fichiers \gls{stl}, résultant des triangulations des fichiers précédent.
 
-Voici les résultats obtenus
+\subsection{Lidar}
+Voici les résultats obtenus:
 
 \textbf{Point moyen}
 
 \begin{table}[htb!]
 \begin{tabular}{l|c|c|c|c|c|}
 \cline{2-6}
-\multicolumn{1}{c|}{}                      & Nb Points & Temps  & Points supprimés & Taille original & Taille de sortie \\ \hline
+\multicolumn{1}{c|}{}                      & Nb Points & Temps  & Points supprimés & Taille originale & Taille de sortie \\ \hline
 \multicolumn{1}{|l|}{2488500\_1111500.las} & 8'570'137 & 4.67 s & 1'147'625        & 229 Mo          & 199 Mo           \\ \hline
 \multicolumn{1}{|l|}{2499000\_1118000.las} & 9'336'496 & 4.96 s & 1'000'136        & 250 Mo          & 223 Mo           \\ \hline
 \end{tabular}
@@ -114,7 +116,7 @@ Voici les résultats obtenus
 \begin{table}[htb!]
 \begin{tabular}{l|c|c|c|c|c|}
 \cline{2-6}
-\multicolumn{1}{c|}{}                      & Nb Points & Temps  & Points supprimés & Taille original & Taille de sortie \\ \hline
+\multicolumn{1}{c|}{}                      & Nb Points & Temps  & Points supprimés & Taille originale & Taille de sortie \\ \hline
 \multicolumn{1}{|l|}{2488500\_1111500.las} & 8'570'137 & 4.87 s & 1'147'625        & 229 Mo          & 199 Mo           \\ \hline
 \multicolumn{1}{|l|}{2499000\_1118000.las} & 9'336'496 & 5.03 s & 1'000'136        & 250 Mo          & 223 Mo           \\ \hline
 \end{tabular}
@@ -122,29 +124,56 @@ Voici les résultats obtenus
 \label{tab:las_cleaning_ponderated}
 \end{table}
 
-On observe aucune différence de taille de sortie ni de nombre de points supprimés.
+On n’observe aucune différence de taille de sortie ni de nombre de points supprimés entre les deux méthodes.
 Cela s'explique de par le choix de la méthode de nettoyage.
 Ici le nombre d'impulsions à retour multiple reste constant et donc le nombre de points à supprimer ne varie pas.
 
-Cependant on peut observer des différences de position des points lidar dans les figure de l'annexe 5
+Cependant, on observe des différences de position des points lidars dans les figures de l'annexe 5.
 
 \subsection{Lissage de maillage}
+
+Le lissage a été effectué avec un epsilon de 2.0.
+Voici les résultats obtenus sur un maillage comportant une route: 
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/mesh_noise.png}
+    \caption{Maillage bruité avec une route avant lissage. Source : réalisé par Jérôme Chételat}
+    \label{fig:mesh_noise}
+\end{figure}
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/mesh_noise_not_noise.png}
+    \caption{Maillage avec une route après lissage. Source : réalisé par Jérôme Chételat}
+    \label{fig:mesh_noise_not_noise}
+\end{figure}
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/mesh_noise_difference.png}
+    \caption{Différence d'élévation des maillages après lissage. Vert: maillage de base. Source : réalisé par Jérôme Chételat}
+    \label{fig:mesh_noise_diff}
+\end{figure}
+
+On observe dans les images précédentes que le lissage rend les surfaces planes et que les pics ne perdent pas d'élévation passée un certain $\epsilon$.
+
 \subsection{Décimation de maillage}
 
 \section{Stack Web}
-\subsection{Serveur Web}
+\subsection{Serveur web}
 
-Le serveur actuel permet les téléchargements de fichiers \gls{stl} présents dans
+Le serveur actuel permet le téléchargement de fichiers \gls{stl} présents dans
 un dossier spécifique. Il arrive à servir des fichiers avec les mécaniques \gls{cors}.
 
-\subsection{Client Web}
+\subsection{Client web}
 Les tests suivants ont été effectués sur le navigateur Firefox version 80.0.1.
 Le client web permet actuellement de faire un rendu d'un maillage dans un
 navigateur web. Un fichier \gls{stl} est téléchargé à l'aide de l'api
 \textit{fetch} du navigateur au chargement de la page web.
 
 On peut observer dans la figure \ref{fig:web_client} en annexe 6 qu'une grande partie de la page est blanche.
-Ce phénomène est normal car le rendu se fait sans ombres.
+Ce phénomène est normal, car le rendu se fait sans ombres.
 De ce fait, cela rend l'observation des changements d'élévation des surfaces difficile.
 Cependant, on peut voir que le contour de la partie blanche laisse imaginer qu'il y a bien un rendu de maillage présent.
 
@@ -159,5 +188,5 @@ moment de l'écriture de ce mémoire, l'utiliser des WebWorkers
 en Rust sont encore expérimentales.
 
 Une autre amélioration à faire serait de réaliser le calcule des ombres afin d'afficher les reliefs du maillage.
-Enfin donner des controls à l'utilisateur pour changer le point 
-de vue du maillage (angle et position de la caméra dans la scène)
+Ou encore de donner des contrôles à l'utilisateur pour changer le point 
+de vue du maillage (angle et position de la caméra dans la scène).
