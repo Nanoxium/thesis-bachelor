@@ -1,44 +1,65 @@
 % !TeX spellcheck = fr_FR
 \chapter{Chapitre 2 : Algorithmes}
 
-Ce chapitre concerne les différents algorithmes de traitement des données du chapitre 1.
+Ce chapitre contient les différents algorithmes que nous avons décidé d'implémenter dans notre application.
+Nous allons premièrement expliquer comment nettoyer les lidars à l'aide de
+l'algorithme de nettoyage par point pondéré et de nettoyage par point moyen,
+ensuite nous allons parler du fonctionnement de l'algorithme de triangulation de 
+Delaunay et pour terminer nous vous expliquerons l'algorithme de fusion de 
+maillage que l'on a implémenté.
 
-\section{Filtrage de données LIDAR}
+\section{Nettoyage}
 
-L'utilité de réduire la quantité de données sauvegardées de nos jours au vu des moyens de stockage moderne employé n'est plus une occupation majeure.
-Cependant, certains systèmes restent limités en mémoire et c'est à ce moment qu'intervient le filtrage de données.
-Le filtrage des données \gls{lidar} est utile sur des systèmes plus puissants pour accélérer l'utilisation ultérieure des fichiers. Les méthodes présentées ici peuvent être utilisées indépendamment ou bien combinées.
+L'utilité de réduire la quantité de données sauvegardées de nos jours au vu des 
+moyens de stockage moderne employés n'est plus une occupation majeure.
+Cependant, certains systèmes d'informations restent limités en mémoire et en
+puissance de calcul notamment les smartphones ou encore les ordinateurs portable.
+Dans ces cas, 
+% c'est à ce moment qu'intervient un nettoyage de données.
+Le nettoyage des données \gls{lidar} est aussi utile sur des systèmes plus puissants
+pour accélérer l'utilisation ultérieure des fichiers par la quantité réduite
+d'information.
+Les méthodes présentées ici ne sont pas exhaustive et peuvent être utilisées
+de manière indépendante ou bien combinées ensemble.
 
-\subsection{Filtre par classe de point}
-Une première méthode pour filtrer les données est de se baser sur la classification des points du chapitre 1.1. En connaissant les informations qui nous intéressent, le filtrage se fait donc lors de la lecture des données.
-Étant donné que la lecture se déroule de manière séquentielle, il suffit de poser une ou plusieurs conditions vérifiant la classe du point.
-Si la ou les conditions sont respectées, le point est collecté dans une liste de points à garder, le cas échéant étant simplement de l'ignorer et de passer au suivant.
-Une fois la lecture terminée, on réécrit la liste des points gardés dans un nouveau fichier \gls{lidar}.
-Le fichier original peut être supprimé ou conservé.
+\subsection{Lidar}
 
-\subsection{Filtre par point pondéré}
+Les données brutes provenant des instruments \gls{lidar} contiennent souvent
+des informations bruitées et inutile.
+Ces dernières peuvent fausser les résultats finaux et prennent de la mémoire
+de stockage supplémentaire.
 
-Une autre manière de réduire la quantité de données est de remplacer plusieurs points par un seul où l'élévation de celui-ci équivaut à la moyenne des élévations des voisins.
-En d'autres termes $$ P_{\bar{y}} = \frac{1}{n} \sum_{i=0}^{n} p_{iy} $$
-où $n$ est le nombre de voisins d'un point $P$. 
-Le choix de l'endroit où l'on créera le point peut être déterminé à l'aide d'une condition, p. ex. $$\sum_{i=0}^n dist(P, p_i) \geq \epsilon$$
-
-Un effet de bord de cette méthode est le lissage des surfaces plates. Un exemple serait les illustrations \ref{fig:before_las_filter} et \ref{fig:after_las_filter} où l'on peut observer qu'après une reconstruction de surface, on aperçoit que les points on une tendance à moins osciller dans l'axe vertical.
 \begin{figure}[htbp!]
     \centering
-    \includegraphics[width=0.8\linewidth]{figures/lissage_brut.png}
-    \caption{Surface plane avant le passage par un filtre. Source : réalisé par Jérôme Chételat}
-    \label{fig:before_las_filter}
+    \includegraphics[width=0.8\linewidth]{figures/lidar noise.png}
+    \caption{Bruit sur des données lidar. Source : tiré de ref URL01}
+	\label{fig:lidar_noise}
 \end{figure}
+
+Les méthodes de nettoyage présenté ici ce concentre sur les impulsions à retour
+multiple vu au chapitre 1.
+
+Une impulsion peut donc avoir plusieurs retours. Cela est dû au fait que la
+lumière frappe des objets superposés verticalement. Comme on peut le voir sur 
+la figure \ref{fig:lidar_echo}
+
 \begin{figure}[htbp!]
     \centering
-    \includegraphics[width=0.8\linewidth]{figures/lissage_filtrer.png}
-    \caption{Surface plane après le passage par un filtre. Source : réalisé par Jérôme Chételat}
-    \label{fig:after_las_filter}
+	\includegraphics[width=0.8\linewidth]{figures/lidar_echo.png}
+	\caption{Retours d'une impulsion de lidar. Source : tiré de ref URL04}
+	\label{fig:lidar_echo}
 \end{figure}
-\subsection{Filtre par point moyen}
 
-Ce filtre se base sur l'utilisation de l'intensité de retour d'une impulsion. Les points à retour multiple peuvent être nombreux en présence d'arbres. Au lieu d'avoir plusieurs points de retour, on les remplace par un seul point qui prend une moyenne de toutes les positions de retour de la même impulsion. En terme mathématique, on a donc : 
+
+
+\subsubsection{Nettoyage par point moyen}
+
+Ce filtre se base sur la moyenne de position des points d'une impulsion.
+Ces impulsions à retour multiple peuvent être nombreux en présence d'arbres.
+À la place d'avoir plusieurs échos, on les remplace par un seul point qui est la
+position moyenne des retours.
+
+En terme mathématique, on a donc : 
 $$
 P = 
 \begin{pmatrix}
@@ -50,7 +71,7 @@ P =
 \frac{1}{n}
 \sum_{i=0}^{n}
 \begin{pmatrix}
-   p_{i_x} \\
+   p_{ix} \\
    p_{iy} \\
    p_{iz} \\
 \end{pmatrix}
@@ -59,28 +80,116 @@ $$
 Où $n$ désigne le nombre de retour d'une impulsion et $p$ les points de l'impulsion.
 
 
+
+\subsubsection{Nettoyage par point pondéré}
+
+Une autre méthode similaire au point moyen consiste à refaire la moyenne des
+position des voisins mais pondérée par l'intensité d'un retour.
+% En d'autres termes $$ P_{\bar{y}} = \frac{1}{n} \sum_{i=0}^{n} p_{iy} $$
+% où $n$ est le nombre de voisins d'un point $P$. 
+% Le choix de l'endroit où l'on créera le point peut être déterminé à l'aide d'une condition,
+% p. ex. $$\sum_{i=0}^n dist(P, p_i) \geq \epsilon$$
+
+\subsubsection{Nettoyage par classe de points lidar}
+
+Une méthode différente pour nettoyer les données est de se baser sur la 
+classification des points présentée au chapitre 1.1.
+La classification est données sur chaque point.
+En connaissant le type de points qui nous intéresse, il est possible de charger
+en mémoire uniquement le ou les types de points voulus. 
+% En connaissant les informations qui nous intéressent, le nettoyage se fait 
+% donc lors de la lecture des données.
+% Étant donné que la lecture se déroule de manière séquentielle, il suffit de
+% poser une ou plusieurs conditions vérifiant la classe du point.
+
+\subsection{Maillage}
+\subsubsection{Nettoyage de maillage}
+
+Dans cette partie, on nettoie le bruit sur les grandes surfaces planes.
+Plus concrètement on lisse les surfaces planes en observant les changements
+d'élévation entre les sites afin de déterminer si ce changement est du bruit ou
+bien un réel changement de géométrie.
+
+On procède de la manière suivante. 
+Si la différence de hauteur entre la moyenne des voisins et le site actuel est
+supérieur à un $\epsilon$ on applique un changement de hauteur sur le site
+actuel.
+En d'autre termes :
+
+$$
+P_z = 
+\left \{
+	\begin{array}{l}
+		\overline{V_z}\text{ si } \overline{V_z} - P_z < \epsilon \\ 
+		P_z 
+	\end{array}
+\right .
+$$
+
+Où $\overline{V_z}$ est l'élévation moyenne des voisins du site $P$
+
+On peut observer le résultat de cette méthode dans les illustrations \ref{fig:before_las_filter} et
+\ref{fig:after_las_filter}.
+On aperçoit que les points on tendance à moins osciller dans l'axe vertical.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/lissage_brut.png}
+    \caption{Surface plane avant le nettoyage. Source : réalisé par Jérôme Chételat}
+    \label{fig:before_las_filter}
+\end{figure}
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/lissage_filtrer.png}
+    \caption{Surface plane après le nettoyage. Source : réalisé par Jérôme Chételat}
+    \label{fig:after_las_filter}
+\end{figure}
+
 \section{Triangulation de Delaunay}
+Dans cette section, on détail les algorithme de reconstruction de surface.
+Il existe plusieurs manière de créer le même résultat mais une méthode utilisée est la triangulation de Delaunay.
 La triangulation de Delaunay est une manière de créer des triangles entre des points dispersés dans l’espace.
 Cette manière de trianguler les points permet de créer un résultat plus homogène que d’autres méthodes.
+On peut observer des résultats différents dans la figure
+\ref{fig:triangulation_example}
 
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/triangulation-example.png}
-    \caption{Deux triangulations du même jeu de données. Source : tiré de ref URL01}
+    \caption{Deux triangulations appliquées sur même jeu de données. Source : tiré de ref URL03}
     \label{fig:triangulation_example}
 \end{figure}
 
 \subsection{Bowyer-Watson}
-Il existe plusieurs algorithmes pour recréer des triangles entre des points.
-Il s’agit de l’algorithme de Bowyer-Watson, un algorithme itératif découvert par Adrian Bowyer et David Watson.
-Le principe de ce procédé se repose sur l’ajout progressif de points dans la triangulation.
+L'algorithme de Bowyer-Watson est conceptuellement simple.
+C'est un algorithme itératif découvert par Adrian Bowyer et David Watson.
+Le principe de ce dernier repose sur l’ajout progressif de points dans la triangulation.
 Après chaque ajout, de nouveaux triangles sont formés à partir du point ajouté et des sommets du triangle contenant le point.
 
-Soit $\mathcal{P} \subset \mathbb{R}^2$ l'ensemble des points à trianguler et $\mathcal{T}$ les triangles appartenant à la triangulation. On construit dans un premier temps, un triangle $S \in \mathcal{T}$ tel que $\mathcal{P} \subset S$. On nomme ce triangle le "super-triangle". Il doit contenir en son sein l'ensemble des points $\mathcal{P}$. On ajoute donc trois points, les sommets de $S$ dans $\mathcal{P}$.
+Soit $\mathcal{P} \subset \mathbb{R}^2$ l'ensemble des points à trianguler et $\mathcal{T}$ les triangles appartenant à la triangulation.
+On construit dans un premier temps, un triangle $S \in \mathcal{T}$ tel que $\mathcal{P} \subset S$.
+On nomme ce triangle le "super-triangle".
+Il doit contenir en son sein l'ensemble des points $\mathcal{P}$. On ajoute donc trois points, les sommets de $S$ dans $\mathcal{P}$.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.66\linewidth]{figures/bowyer-watson/step_3.png}
+	\caption{Création du super-triangle englobant l'ensemble de points $\mathcal{P}$. Source : réalisé par
+	Jérôme Chételat}
+	\label{fig:triangulation_step_3}
+\end{figure}
 
 On prend ensuite un point de $\mathcal{P}$ puis on détermine dans quel triangle il se situe.
-Pour connaître l'appartenance d'un point à un triangle, on détermine si un point est contenu dans le cercle circonscrit d'un triangle.
+Pour connaître l'appartenance d'un point dans un triangle, on détermine si un point est contenu dans le cercle circonscrit dudit triangle.
 La condition qui permet de déterminer si un point $D$ est contenu dans le cercle-circonscris de $\triangle ABC$ est la suivante :
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.66\linewidth]{figures/bowyer-watson/step_4.png}
+    \caption{Ajout du premier points de dans la triangulation. Source : réalisé par
+	Jérôme Chételat}
+	\label{fig:triangulation_step_4}
+\end{figure}
 
 $$
 \begin{vmatrix}
@@ -90,32 +199,62 @@ $$
 \end{vmatrix} \geqslant 0
 $$
 
-Si la condition est vraie, le point est relié au sommet du triangle qui le contient. Les triangles formés désormais appartiennent à $\mathcal{T}$.
-
-On répète les opérations d'ajout de points et de création de triangles jusqu'à ce qu'on ait parcouru tous les points de $P$
-
-Pour finir, on supprime les sommets du super-triangle ainsi que ses arrêtes de $\mathcal{P}$ et de $\mathcal{T}$.
-
-Le résultat est un ensemble de triangles $\mathcal{T}$ représentant la géométrie des surfaces appelées triangulation de Delaunay.
-Ce résultat est unique pour un ensemble de points $\mathcal{P}$ donné.
-En voici un exemple dans la figure \ref{fig:example_delaunay}.
-
+Si la condition est vraie, le point est relié au sommet du triangle qui le contient.
+Les arrête créées forment de nouveaux triangles appartenant désormais à la
+triangulation $\mathcal{T}$. Dans le cas de la première itération, on a le
+résultat intermédiaire dans la figure \ref{fig:triangulation_step_5}.
 
 \begin{figure}[htbp!]
     \centering
-    \includegraphics[width=0.8\linewidth]{figures/example_delaunay.png}
-    \caption{Maillage résultant d'une triangulation de delaunay. Source : réalisé par Jérôme Chételat}
-    \label{fig:example_delaunay}
+    \includegraphics[width=0.66\linewidth]{figures/bowyer-watson/step_5.png}
+    \caption{Ajout des arrêtes reliant les sommets du super-triangle au point
+		ajouté dans la triangulation. Source : réalisé par
+	Jérôme Chételat}
+	\label{fig:triangulation_step_5}
 \end{figure}
 
-\subsection{Lee \& Scachter}
-L'algorithme de Lee et Scachter est basé sur le principe de "Divide and conquer". Le principe consiste à former des petites triangulations à partir d'un espace divisé selon un axe. On applique une triangulation pour la première itération. Ensuite, on fusionne les triangulations entre elles et l'on répète ces étapes jusqu'à ne plus pouvoir en fusionner. Le résultat final est un maillage considéré comme étant triangulation de Delaunay. 
+On répète les opérations d'ajout de points et de création de triangles jusqu'à ce qu'on ait parcouru tous les points de $P$
+
+Pour finir, on identifie les arrêtes reliées aux sommets du super-triangle puis on
+les supprime de la triangulation $\mathcal{T}$.
+On supprime également les sommets du super-triangle ainsi que ses arrêtes de 
+$\mathcal{P}$ et de $\mathcal{T}$. Exemple de l'identification des arrêtes
+dans la figure \ref{fig:triangulation_step_9}
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.66\linewidth]{figures/bowyer-watson/step_9.png}
+    \caption{Identification des arrêtes liées aux sommets du super-triangle en
+		rouge . Source : réalisé par
+	Jérôme Chételat}
+	\label{fig:triangulation_step_9}
+\end{figure}
+
+Le résultat est un ensemble de triangles $\mathcal{T}$ représentant la géométrie
+des surfaces. Cette dernière est appelée triangulation de Delaunay.
+Ce résultat est unique pour un ensemble de points $\mathcal{P}$ donné.
+On peut observer le résultat de la triangulation dans la figure \ref{fig:triangulation_step_10}.
+
+\begin{figure}[htbp!]
+    \centering
+    \includegraphics[width=0.66\linewidth]{figures/bowyer-watson/step_10.png}
+    \caption{Maillage résultant d'une triangulation de delaunay. Source : réalisé par Jérôme Chételat}
+	\label{fig:triangulation_step_10}
+\end{figure}
+
+\subsection{Lee \& Schachter}
+
+L'algorithme de Lee et Schachter est basé sur le principe de "Divide and conquer".
+Le principe consiste à former des petites triangulations à partir d'un espace divisé selon un axe.
+On applique une triangulation pour la première itération.
+Ensuite, on fusionne les triangulations entre elles et l'on répète ces étapes jusqu'à ne plus pouvoir en fusionner.
+Le résultat final est un maillage considéré comme triangulation de Delaunay. 
 
 \section{Fusion de maillage}
 
-L'algorithme présenté dans cette section concerne la fusion de maillage. Dans l'application du travail de bachelor, il se peut que l'on ait déjà des triangulations existantes et que l'on souhaite afficher un résultat de la fusion des deux triangulations. Il s'agit en réalité que d'une partie de l'algorithme de triangulation par Lee et Scachter basé sur le principe de "Divide and conquer".
-
-
+L'algorithme présenté dans cette section concerne la fusion de maillage.
+Dans l'application du travail de bachelor, il se peut que l'on ait déjà des triangulations existantes et que l'on souhaite afficher un résultat de la fusion des deux triangulations.
+Il s'agit en réalité que d'une partie de l'algorithme de triangulation par Lee et Scachter basé sur le principe de "Divide and conquer".
 
 Soit deux triangulations $M_L$ et $M_R$ linéairement séparable par une droite $g$.
 On cherche en premier les sites aux extrémités inférieures selon l'axe $y$ et on les relie par une arrête coupant la droite $g$.

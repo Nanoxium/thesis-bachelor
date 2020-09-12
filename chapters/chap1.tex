@@ -6,28 +6,29 @@
 % \end{center}
 
 Dans ce chapitre nous allons aborder les différents formats de données qui seront
-cités dans la suite de ce document.
+et utilisé dans la suite de ce document.
 
-\section{Fichier lidar}
-
-\gls{lidar} ou en français 
-détection et estimation de la distance par la lumière est une technique de mesure de distance où la lumière réalise un 
+\section{Nuage de point}
+Un nuage de points est un ensemble de points de données dans un système de
+coordonnées à trois dimensions. Il est généralement produit à partir d'un
+instrument de \gls{lidar} ou en français détection et estimation de la distance
+par la lumière. Il s'agit une technique de mesure de distance où la lumière réalise un 
 aller-retour entre sa source et un objet. On chronomètre le temps entre le moment 
-où une pulsation de lumière est émise par un laser et son retour vers un capteur.
+où une impulsion de lumière est émise par un laser et son retour vers un capteur.
 En connaissant la vitesse de propagation de la lumière dans l’environnement où elle
-évolue, il est possible de déterminer la distance qui sépare l’objet 
-du capteur. Plus précisément, il s’agit de la distance séparant le dispositif de
-mesure et un point de l’objet frappé par la lumière émise. 
+évolue, il est possible de déterminer la distance qui sépare l’objet du capteur.
+Plus précisément, il s’agit de la distance séparant le dispositif de mesure et
+un point de l’objet frappé par la lumière émise. 
 Cette opération effectuée à de multiples reprises en changeant par petit pas 
-l’angle du laser, créer des points qui une fois réunis,
-constituent un nuage de points profilant l'environnement autour de l'instrument.
-Si l'instrument de mesure est placé sur un avion et que la source de lumière est
+l’angle du laser, créer des points qui une fois réunis, constituent un nuage de points profilant l'environnement autour de l'instrument.
+Si l'instrument de mesure est placé sur un aéronef et que la source de lumière est
 dirigée vers le bas, il est ainsi possible de capturer, sous forme d'un nuage de
 points, une région du globe. Ce cas nécessite de connaître la position
-\gls{gps} de l'avion au moment de la capture d'un point afin de mettre en relation
+\gls{gps} du véhicule au moment de la capture d'un point afin de mettre en relation
 tous les points à la fin de la mesure.
 Il existe différentes versions de la spécification et ce document va se concentrer sur la version un point deux.
 
+\subsection{Format LIDAR}
 Le format de stockage des nuages de points de données \gls{lidar}, est un format
 binaire dont les spécifications sont définies par l'\gls{asprs}.
 Le format \gls{las} est composé de trois sections, respectivement:
@@ -221,9 +222,16 @@ Si le bit cinq à un, le point a été créé par un logiciel de manière synth�
 \label{tab:las_point_class_meaning}
 \end{table}
 
-\section{Fichier Stéréoligraphique}
+\section{Maillage}
+Les maillages sont une modélisation géométrique d'un domaine spatial continu
+par des éléments proportionnés finis.
+Les maillages simplifient donc un système par un modèle représentant ce système
+ou son environnement. Ils permettent notamment de réaliser des simulations ou bien d'avoir
+une représentation graphique numérique.
 
-Le format de \gls{stl} est conçu par la société 3D System pour contenir des modèles d'objets tridimensionnels.
+\subsection{Fichier Stéréoligraphique}
+
+Le format de \gls{stl} est conçu par la société 3D System pour contenir des maillage d'objets tridimensionnels.
 Il a été pensé pour permettre un prototypage rapide dans les logiciels de \gls{cao}. 
 Ce format ne décrit que la géométrie de la surface d'un modèle.
 Il existe un format binaire et un format ASCII, le dernier laissant une empreinte dans la mémoire morte plus conséquente.

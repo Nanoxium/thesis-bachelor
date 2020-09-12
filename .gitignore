@@ -7,3 +7,8 @@
 *.out
 *.tex~
 *.ptc
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.sync*
