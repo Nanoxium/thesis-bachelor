@@ -25,8 +25,8 @@ Ce langage permet une compilation vers les plateformes Windows, MacOS et Linux.
 
 Le choix du langage Rust n'est pas anodin.
 Un des buts de ce projet était d'expérimenter un stack
-web applicatif utilisant un seul langage et jusqu'à présent un langage règnait dans ce domaine.
-Il s'agit de JavaScript car depuis la naissance des sites web dynamique, il
+web applicatif utilisant un seul langage et jusqu'à présent un langage régnait dans ce domaine.
+Il s'agit de JavaScript, car depuis la naissance des sites web dynamique, il
 n'avait pas de concurrent.
 Cependant depuis l'apparition du \gls{wasm} dans les navigateurs, il n'est plus
 le seul. D'autre langage telle que le Rust compile désormais en \gls{wasm}.
@@ -48,7 +48,7 @@ L'application est composée de quatre modules principaux.
 \end{itemize}
 
 En ce qui concerne le module \textit{utilitaire}, l'architecture en pipeline est
-utilisé pour tout les binaires. Il est composé de 4 étapes. 
+utilisée pour tous les binaires. Il est composé de 4 étapes. 
 
 \begin{figure}[htbp!]
     \centering
@@ -57,7 +57,7 @@ utilisé pour tout les binaires. Il est composé de 4 étapes.
     \label{fig:pipeline_process}
 \end{figure}
 
-Chacun des utilitaires adapte ce pipeline pour traiter des données spécifique.
+Chacun des utilitaires adapte ce pipeline pour traiter des données spécifiques.
 
 \section{Bibliothèque}
 
@@ -99,12 +99,12 @@ du projet de semestre, mais également un algorithme de fusion de triangulation.
 
 L'implémentation a été faite lors du projet de semestre. 
 Actuellement l'algorithme a une complexité temporelle de $O(n^2)$ à cause de la 
-recherche d'appartenance d'un point à un triangle qui itère à travers tout les
+recherche d'appartenance d'un point à un triangle qui itère à travers tous les
 triangles de la triangulation jusqu'à trouver le triangle contenant le point.
 
-Dans ce travail, l'optimisation de cet algorithme n'était pas demandé.
+Dans ce travail, l'optimisation de cet algorithme n'était pas demandée.
 Cependant la complexité pourrait théoriquement être réduite à $O(n \log(n))$ en
-utilisant une structure de données tel qu'un arbre ou un dictionnaire
+utilisant une structure de données telle qu'un arbre ou un dictionnaire
 qui enregistrerait la position des centres des
 cercles-circonscris de chaque triangle créé et parcouru.
 
@@ -137,16 +137,16 @@ Son implémentation est disponible dans l'annexe 3.
 Elle parcourt les différents triangles du maillage et pour chaque point présent du triangle, on ajoute ses deux voisins dans une liste.
 
 Cette dernière peut cependant
-être améliorée car actuellement, une copie du voisinage est renvoyée à
-l'appelant. Ce qui à pour effet de créer des données dupliquée. Ce choix a été
-fait car l'utilisation du voisinage dans un algorithme de fusion nécessite de
-muter certaine partie. Une solution pour éviter ces duplications serait de créer
-une structure indiquant les parties qui ont mutés et de rendre la structure Mesh
+être améliorée, car actuellement, une copie du voisinage est renvoyée à
+l'appelant. Ce qui à pour effet de créer des données dupliquées. Ce choix a été
+fait, car l'utilisation du voisinage dans un algorithme de fusion nécessite de
+muter certaines parties. Une solution pour éviter ces duplications serait de créer
+une structure indiquant les parties qui ont muté et de rendre la structure Mesh
 immutable. Lors d'un prochain appel de la fonction, cette dernière pourrait
 renvoyer un voisinage ayant les changements appliqués à partir de la structure
 précédemment décrite.  
 
-Concernant le champ hull, aucune méthode n'est disponible dans la librairy pour en calculé. Il est possible de le calculé au travers de la crate "ncollide" qui expose une version de quickhull, un algorithme de calcule d'enveloppe convexe.
+Concernant le champ hull, aucune méthode n'est disponible dans la bibliothèque pour en calculer. Il est possible de le calculé au travers de la crate "ncollide" qui expose une version de quickhull, un algorithme de calcule d'enveloppe convexe.
 
 Une fonction intéressante est la recherche d'un candidat final dans un maillage. Voici la signature de la fonction:
 \begin{lstlisting}[language=Rust, style=boxed]
@@ -177,7 +177,7 @@ Un point intéressant est l'utilisation de pattern matching provenant de langage
 
 Ce module contient les binaires en ligne de commande pour traiter les données du
 chapitre 1.
-Chaque binaire utilise l'architecture en pipeline car c'est ce qui s'applique le
+Chaque binaire utilise l'architecture en pipeline, car c'est ce qui s'applique le
 mieux pour l'utilisation des outils.
 
 Chaque utilitaire utilise une crate pour vérifier et extraire les arguments
@@ -191,28 +191,28 @@ Voici la liste des commandes disponibles :
 	\item las-geometry : Triangulation par l'algorithme de Bowyer-Watson
 	\item las-filtering : Nettoyage de points lidar
 	\item las-sample : Prendre les $n$ premiers points d'un fichier lidar
-	\item las-map-geometry : Triangulation d'un ou plusieurs fichier
+	\item las-map-geometry : Triangulation d'un ou plusieurs fichiers
 		simultanément
 	\item mesh-merge : Fusion de maillage
 	\item mesh-smoothing : Nettoyage de maillage
 	\item mesh-subsample : Prendre qu'une partie des triangles du maillage
-	\item to-txt : Transforme un fichier lidar en simple points ascii dans le
+	\item to-txt : Transforme un fichier lidar en simples points ASCII dans le
 		format $x\ y\ z$
 \end{itemize}
 
 \subsection{mesh-smoothing}
 
 Le binaire ici produit permet de nettoyer le bruit qui est généré par les points
-lidar aprés une triangulation. Il agit sur les triangles d'un maillage.
+lidars après une triangulation. Il agit sur les triangles d'un maillage.
 
-La commande prend en argument un fichier d'entré et un fichier de sortie. Il
+La commande prend en argument un fichier d'entrée et un fichier de sortie. Il
 prend également en option un paramètre $\epsilon$ qui sert de critère pour
-appliqué le moyennage d'un point par rapport à ses voisins.
+appliquer la moyenne d'un point par rapport à ses voisins.
 
 Pour réaliser le nettoyage, on itère à travers la liste des sommets du maillage.
 Pour chaque sommet, on vérifie si la différence entre la hauteur moyenne des voisins
-et le sommet actuel est inférieur au $\epsilon$.
-Si la condition est vrai, dans ce cas on assigne la hauteur moyenne des voisins
+et le sommet actuel est inférieure au $\epsilon$.
+Si la condition est vraie, dans ce cas on assigne la hauteur moyenne des voisins
 au sommet actuel. Le cas échéant, le sommet est simplement ignoré.
 
 L'itération se fait sur une copie des sommets du maillage pour éviter d'avoir
@@ -222,7 +222,7 @@ voisin d'un autre est modifié avant ce dernier.
 \subsection{mesh-subsample}
 
 La commande permet de décimer un maillage. Elle
-prend en argument un fichier STL d'entré et un fichier STL de sortie.
+prend en argument un fichier STL d'entrée et un fichier STL de sortie.
 Elle prend encore en paramètres optionnels un type de filtre à appliquer.
 
 Le paramètre du choix de la méthode de décimation est un nombre.
@@ -235,35 +235,35 @@ Le paramètre du choix de la méthode de décimation est un nombre.
 Par défaut, si aucune méthode n'est choisie, on applique la décimation selon la
 distance.
 
-On crée un itérateur sur les sommets présent dans le fichier STL. Ensuite on
-calcule la distance euclidiènne par rapport au voisin de chaque sommet.
+On crée un itérateur sur les sommets présents dans le fichier STL. Ensuite on
+calcule la distance euclidienne par rapport au voisin de chaque sommet.
 Si elle se trouve être inférieur à la valeur de $\epsilon$, on supprime le
-sommet. Après avoir déterminer les sommets qui sont à garder, on applique à
+sommet. Après avoir déterminé les sommets qui sont à garder, on applique à
 nouveau une triangulation quickhull de la crate \textit{delaunator-rs}. Enfin on
 retourne le nouveau maillage contenant moins de sommets. 
 Une autre manière de
-choisir quelle points sont supprimé est de le faire aléatoirement.
+choisir quels points seront supprimés est de le faire aléatoirement.
 
 \subsection{mesh-merge}
 
 Cette commande permet à un utilisateur de créer une triangulation à
-partir de la fusion de deux triangulation existante. Cet outil est
+partir de la fusion de deux triangulations existante. Cet outil est
 particulièrement utile lors de lorsque l'on a déjà une partie des points lidar
 sous forme de maillage.
 \section{Stack Web}
 
-Cette section présente la partie concernant le web. On y détail l'implémentation
+Cette section présente la partie concernant le web. On y détaille l'implémentation
 de deux modules: le client et le serveur.
 Ces derniers forment le \textit{stack web}.
 
 \subsection{Serveur}
 
 Le serveur consiste en un binaire Rust utilisant le framework actix-web.
-Le choix de l'utilisation de ce framework a été fait pour délégué la gestion des
+Le choix de l'utilisation de ce framework a été fait pour déléguer la gestion des
 requêtes reçues de bas niveau ainsi que l'utilisation simple de fonctions
 asynchrones pour gérer ces dernières.
-Il a aussi été choisi car il est le seul, au moment de l'écriture de ce mémoire,
-à utiliser que des fonctionnalités stable du langage de programmation.
+Il a aussi été choisi, car il est le seul, au moment de l'écriture de ce mémoire,
+à utiliser que des fonctionnalités stables du langage de programmation.
 
 Le serveur est une \gls{api} \gls{rest} comprenant une route pour chaque fichier
 d'un dossier.
@@ -275,11 +275,11 @@ s'appelant \textit{actix\_cors}.
 Il s'agit d'un middleware actix s'ajoutant sur une ou plusieurs routes pour
 activer les mécanismes \gls{cors}.
 
-La lecture et le découpage en paquet d'un fichier est réalisée par un autre
+La lecture et le découpage en paquet d'un fichier sont réalisés par un autre
 module de actix.
 % et parce qu'il se trouve être le seul framework web pour Rust
 % n'utilisant pas une version instable du compilateur de Rust. Il a aussi été
-% choisi car il permet une mise en oeuvre simple de fonctions asynchrones traitant
+% choisi, car il permet une mise en oeuvre simple de fonctions asynchrones traitant
 % les requêtes.
 % Le serveur est une application binaire qui utilise le framework actix-web.
 % Ce framework utilise les nouvelles fonctionnalités du langage telles que les async/await sur des routes.
@@ -298,10 +298,10 @@ On utilise également la crate "nalgebra" qui propose des fonctions pour manipul
 Lorsqu'on écrit du code Rust ciblant les plateformes web, plusieurs contraintes
 doivent être respectées. La première est que \gls{wasm} étant un format sur 32
 bits, la mémoire adressable par le programme n'est que de quatre gigaoctets. Une
-seconde contrainte est que les threads n'existe pas pour une application web
+seconde contrainte est que les threads n'existent pas pour une application web
 et sont remplacés par les WebWorkers
 \footnote{Technologie des navigateurs web permettant l'exécution de
-code dans un processus en arrière plan de manière indépendante}.
+code dans un processus en arrière-plan de manière indépendante}.
 % Une contrainte survient en écrivant du code pour le web avec Rust est que la plupart des fonctionnalités pour améliorer le fonctionnement des modules sont à ce jour encore expérimental et de ce fait, pas suffisamment stable pour créer une application complète.
 
 Lors du chargement de la page web, la première étape est de récupérer le fichier
@@ -317,10 +317,9 @@ triangles. On récupère aussi les normales des triangles. Ils nous permettront 
 faire le calcule des ombrages.
 
 On créer ensuite un vertex buffer object pour chaque objet récupéré du
-maillage, puis l'on transfert les données dans les buffer respectifs.
-Cette dernière opération en Rust est dans un bloc \textit{unsafe} car on déréférence des
+maillage, puis l'on transfère les données dans les buffer respectifs.
+Cette dernière opération en Rust est dans un bloc \textit{unsafe}, car on déréférence des
 pointeurs dans la mémoire du navigateur.
 Enfin on crée les matrices de projection, de vue et de transformation 
-puis on les transfert également dans des zones mémoires graphique.
+puis on les transfère également dans des zones mémoires graphiques.
 Enfin on ordonne de faire un rendu à l'écran.
-

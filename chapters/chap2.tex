@@ -12,20 +12,20 @@ maillage que l'on a implémenté.
 
 L'utilité de réduire la quantité de données sauvegardées de nos jours au vu des 
 moyens de stockage moderne employés n'est plus une occupation majeure.
-Cependant, certains systèmes d'informations restent limités en mémoire et en
-puissance de calcul notamment les smartphones ou encore les ordinateurs portable.
+Cependant, certains systèmes d'information restent limités en mémoire et en
+puissance de calcul notamment les smartphones ou encore les ordinateurs portables.
 Dans ces cas, 
 % c'est à ce moment qu'intervient un nettoyage de données.
 Le nettoyage des données \gls{lidar} est aussi utile sur des systèmes plus puissants
 pour accélérer l'utilisation ultérieure des fichiers par la quantité réduite
 d'information.
-Les méthodes présentées ici ne sont pas exhaustive et peuvent être utilisées
+Les méthodes présentées ici ne sont pas exhaustives et peuvent être utilisées
 de manière indépendante ou bien combinées ensemble.
 
 \subsection{Lidar}
 
 Les données brutes provenant des instruments \gls{lidar} contiennent souvent
-des informations bruitées et inutile.
+des informations bruitées et inutiles.
 Ces dernières peuvent fausser les résultats finaux et prennent de la mémoire
 de stockage supplémentaire.
 
@@ -55,7 +55,7 @@ la figure \ref{fig:lidar_echo}
 \subsubsection{Nettoyage par point moyen}
 
 Ce filtre se base sur la moyenne de position des points d'une impulsion.
-Ces impulsions à retour multiple peuvent être nombreux en présence d'arbres.
+Ces impulsions à retour multiple peuvent être nombreuses en présence d'arbres.
 À la place d'avoir plusieurs échos, on les remplace par un seul point qui est la
 position moyenne des retours.
 
@@ -84,7 +84,7 @@ Où $n$ désigne le nombre de retour d'une impulsion et $p$ les points de l'impu
 \subsubsection{Nettoyage par point pondéré}
 
 Une autre méthode similaire au point moyen consiste à refaire la moyenne des
-position des voisins mais pondérée par l'intensité d'un retour.
+positions des voisins, mais pondérée par l'intensité d'un retour.
 % En d'autres termes $$ P_{\bar{y}} = \frac{1}{n} \sum_{i=0}^{n} p_{iy} $$
 % où $n$ est le nombre de voisins d'un point $P$. 
 % Le choix de l'endroit où l'on créera le point peut être déterminé à l'aide d'une condition,
@@ -94,7 +94,7 @@ position des voisins mais pondérée par l'intensité d'un retour.
 
 Une méthode différente pour nettoyer les données est de se baser sur la 
 classification des points présentée au chapitre 1.1.
-La classification est données sur chaque point.
+La classification est donnée sur chaque point.
 En connaissant le type de points qui nous intéresse, il est possible de charger
 en mémoire uniquement le ou les types de points voulus. 
 % En connaissant les informations qui nous intéressent, le nettoyage se fait 
@@ -112,9 +112,9 @@ bien un réel changement de géométrie.
 
 On procède de la manière suivante. 
 Si la différence de hauteur entre la moyenne des voisins et le site actuel est
-supérieur à un $\epsilon$ on applique un changement de hauteur sur le site
+supérieure à un $\epsilon$ on applique un changement de hauteur sur le site
 actuel.
-En d'autre termes :
+En d'autres termes :
 
 $$
 P_z = 
@@ -130,7 +130,7 @@ Où $\overline{V_z}$ est l'élévation moyenne des voisins du site $P$
 
 On peut observer le résultat de cette méthode dans les illustrations \ref{fig:before_las_filter} et
 \ref{fig:after_las_filter}.
-On aperçoit que les points on tendance à moins osciller dans l'axe vertical.
+On aperçoit que les points ont tendance à moins osciller dans l'axe vertical.
 
 \begin{figure}[htbp!]
     \centering
@@ -146,8 +146,8 @@ On aperçoit que les points on tendance à moins osciller dans l'axe vertical.
 \end{figure}
 
 \section{Triangulation de Delaunay}
-Dans cette section, on détail les algorithme de reconstruction de surface.
-Il existe plusieurs manière de créer le même résultat mais une méthode utilisée est la triangulation de Delaunay.
+Dans cette section, on détaille les algorithmes de reconstruction de surface.
+Il existe plusieurs manières de créer le même résultat, mais une méthode utilisée est la triangulation de Delaunay.
 La triangulation de Delaunay est une manière de créer des triangles entre des points dispersés dans l’espace.
 Cette manière de trianguler les points permet de créer un résultat plus homogène que d’autres méthodes.
 On peut observer des résultats différents dans la figure
