@@ -16,7 +16,7 @@ utilisé dans l'écriture de kernels ou d'applications}. C'est un langage modern
 et mutiparadigme.
 Grâce au principe de \textit{ownership} ou propriété des données, Rust empêche un grand nombre de
 bogues lors de l'écriture du code. 
-Dans la nomenclature de Rust, le mot "crate (" désigne un paquet ou une bibliothèque
+Dans la nomenclature de Rust, le mot "crate" désigne un paquet ou une bibliothèque
 externe.
 Une particularité de Rust est le \textbf{ownership} ou la propriété des données.
 Ce langage permet une compilation vers les plateformes Windows, MacOS et Linux.
@@ -29,7 +29,7 @@ web applicatif utilisant un seul langage et jusqu'à présent un langage régnai
 Il s'agit de JavaScript, car depuis la naissance des sites web dynamique, il
 n'avait pas de concurrent.
 Cependant depuis l'apparition du \gls{wasm} dans les navigateurs, il n'est plus
-le seul. D'autre langage telle que le Rust compile désormais en \gls{wasm}.
+le seul. D'autre langages tels que le Rust compilent désormais en \gls{wasm}.
 Cependant le support de cette plateforme, au moment de l'écriture de ce mémoire,
 reste encore expérimental.
 
@@ -39,9 +39,9 @@ L'application est composée de quatre modules principaux.
 
 \begin{itemize}
 	\item Une bibliothèque regroupant des fonctions et des structures communes.
-	\item Des utilitaires, ce sont les outils en ligne de commande qui
-		implémentes les pipelines 
-	\item Un serveur web, celui-ci expose des fichiers pour le client web à
+	\item Des utilitaires qui sont les outils en ligne de commande qui
+		implémentent les pipelines 
+	\item Un serveur web qui expose des fichiers pour le client web à
 		travers une api \gls{rest}
 	\item Un client web permettant à un utilisateur de visualiser des maillages
 		dans un navigateur web.
@@ -64,8 +64,8 @@ Chacun des utilitaires adapte ce pipeline pour traiter des données spécifiques
 La bibliothèque contient les outils de lecture et d'écriture de fichiers pour les formats du chapitre 2.
 
 Elle a comme dépendance principale les crates \textit{stl-io}
-qui implémentes les structures pour écrire les fichiers \gls{stl} 
-et \textit{las-rs} qui expose les structures et méthodes liées aux données lidar.
+qui implémentent les structures pour écrire les fichiers \gls{stl} 
+et \textit{las-rs} qui exposent les structures et méthodes liées aux données lidar.
 
 \begin{figure}[htbp!]
     \centering
@@ -98,15 +98,15 @@ du projet de semestre, mais également un algorithme de fusion de triangulation.
 \subsubsection{Triangulation de Bowyer-Watson}
 
 L'implémentation a été faite lors du projet de semestre. 
-Actuellement l'algorithme a une complexité temporelle de $O(n^2)$ à cause de la 
+Actuellement l'algorithme a une complexité quadratique ($\mathcal{O}(n^2)$) à cause de la 
 recherche d'appartenance d'un point à un triangle qui itère à travers tous les
-triangles de la triangulation jusqu'à trouver le triangle contenant le point.
+triangles de la triangulation. Ceci est fait jusqu'à trouver le triangle contenant le point.
 
 Dans ce travail, l'optimisation de cet algorithme n'était pas demandée.
-Cependant la complexité pourrait théoriquement être réduite à $O(n \log(n))$ en
+Cependant la complexité pourrait théoriquement être réduite à $\mathcal{O}(n \log(n))$ en
 utilisant une structure de données telle qu'un arbre ou un dictionnaire
 qui enregistrerait la position des centres des
-cercles-circonscris de chaque triangle créé et parcouru.
+cercles-circonscrits de chaque triangle créé et parcouru.
 
 \subsubsection{Fusion de triangulation}
 
@@ -126,7 +126,7 @@ pub struct Mesh {
 }
 \end{lstlisting}
 
-Une particularité de cette structure est qu'on y trouve un champ pour le voisinage du maillage qui est "neighbourhood" et second champ pour l'enveloppe convexe "hull".
+Une particularité de cette structure est que l'on y trouve un champ pour le voisinage du maillage qui est "neighbourhood" et second champ pour l'enveloppe convexe "hull".
 Ils sont optionnels pour maintenir une compatibilité avec les crates utilisées dans la librairie.
 Une des raisons vient du fait que lors de la lecture d'un fichier \gls{stl}, on ne retrouve pas ces champs. 
 
@@ -150,7 +150,7 @@ immutable. Lors d'un prochain appel de la fonction, cette dernière pourrait
 renvoyer un voisinage ayant les changements appliqués à partir de la structure
 précédemment décrite.  
 
-Concernant le champ hull, aucune méthode n'est disponible dans la bibliothèque pour en calculer. Il est possible de le calculé au travers de la crate "ncollide" qui expose une version de quickhull, un algorithme de calcule d'enveloppe convexe.
+Concernant le champ hull, aucune méthode n'est disponible dans la bibliothèque pour en calculer. Il est possible de le calculer au travers de la crate "ncollide" qui expose une version de quickhull, un algorithme de calcule d'enveloppe convexe.
 
 Une fonction intéressante est la recherche d'un candidat final dans un maillage. Voici la signature de la fonction:
 \begin{lstlisting}[language=Rust, style=boxed]
@@ -161,7 +161,7 @@ fn get_side_candidate(
     ) -> Option<usize>;
 \end{lstlisting}
 
-Elle prend en paramètre un point indexé par un entier non signé dans le maillage passé en argument et une structure de point pour effectuer la recherche et retourne éventuellement un index pour le site choisi.
+Elle prend en paramètres un point indexé par un entier non signé dans le maillage passé en argument et une structure de points pour effectuer la recherche puis retourne éventuellement un index pour le site choisi.
 
 Une grosse partie de la fusion est réalisée dans la méthode \textbf{merge} avec comme signature : 
 \begin{lstlisting}[language=Rust, style=boxed]
@@ -175,7 +175,7 @@ La méthode renvoie un maillage dans le cas où toute la fusion se serait bien d
 Une partie intéressante de l'implémentation est la création des arêtes entre la base et un candidat.
 
 
-Un point intéressant est l'utilisation de pattern matching provenant de langage de programmation fonctionnel pour vérifier les conditions énumérées dans le chapitre 2.3. Si un candidat final est choisi, il est ajouté a une liste d'arrête \textbf{edges} et à la fin de l'opération, cette liste est utilisée afin de construire les nouveaux triangles entre les deux maillages.
+Un point intéressant est l'utilisation de pattern matching provenant de langages de programmation fonctionnels pour vérifier les conditions énumérées dans le chapitre 2.3. Si un candidat final est choisi, il est ajouté a une liste d'arêtes \textbf{edges} et à la fin de l'opération, cette liste est utilisée afin de construire les nouveaux triangles entre les deux maillages.
 
 \section{Utilitaires}
 
@@ -184,7 +184,7 @@ chapitre 1.
 Chaque binaire utilise l'architecture en pipeline, car c'est ce qui s'applique le
 mieux pour l'utilisation des outils.
 
-Chaque utilitaire utilise une crate pour vérifier et extraire les arguments
+Chaque utilitaire se sert d'une crate pour vérifier et extraire les arguments
 donnés à ce dernier. La crate se nomme \textit{clap} et grâce à une macro de la
 crate, il est possible de définir simplement les arguments acceptés par 
 l'utilitaire.
@@ -241,7 +241,7 @@ distance.
 
 On crée un itérateur sur les sommets présents dans le fichier STL. Ensuite on
 calcule la distance euclidienne par rapport au voisin de chaque sommet.
-Si elle se trouve être inférieur à la valeur de $\epsilon$, on supprime le
+Si elle se trouve être inférieure à la valeur de $\epsilon$, on supprime le
 sommet. Après avoir déterminé les sommets qui sont à garder, on applique à
 nouveau une triangulation quickhull de la crate \textit{delaunator-rs}. Enfin on
 retourne le nouveau maillage contenant moins de sommets. 
@@ -251,7 +251,7 @@ choisir quels points seront supprimés est de le faire aléatoirement.
 \subsection{mesh-merge}
 
 Cette commande permet à un utilisateur de créer une triangulation à
-partir de la fusion de deux triangulations existante. Cet outil est
+partir de la fusion de deux triangulations existantes. Cet outil est
 particulièrement utile lors de lorsque l'on a déjà une partie des points lidar
 sous forme de maillage.
 \section{Stack Web}
@@ -266,8 +266,7 @@ Le serveur consiste en un binaire Rust utilisant le framework actix-web.
 Le choix de l'utilisation de ce framework a été fait pour déléguer la gestion des
 requêtes reçues de bas niveau ainsi que l'utilisation simple de fonctions
 asynchrones pour gérer ces dernières.
-Il a aussi été choisi, car il est le seul, au moment de l'écriture de ce mémoire,
-à utiliser que des fonctionnalités stables du langage de programmation.
+Il a aussi été choisi, car il est le seul pour l'instant à utiliser que des fonctionnalités stables du langage de programmation.
 
 Le serveur est une \gls{api} \gls{rest} comprenant une route pour chaque fichier
 d'un dossier.
@@ -318,10 +317,10 @@ La lecture du fichier \gls{stl} en binaire est déléguée à la crate \textit{s
 
 On récupère les vertex du maillage ainsi que les indices des sommets qui forment les
 triangles. On récupère aussi les normales des triangles. Ils nous permettront de
-faire le calcule des ombrages.
+faire le calcul des ombrages.
 
-On créer ensuite un vertex buffer object pour chaque objet récupéré du
-maillage, puis l'on transfère les données dans les buffer respectifs.
+On crée ensuite un vertex buffer object pour chaque objet récupéré du
+maillage, puis l'on transfère les données dans les buffers respectifs.
 Cette dernière opération en Rust est dans un bloc \textit{unsafe}, car on déréférence des
 pointeurs dans la mémoire du navigateur.
 Enfin on crée les matrices de projection, de vue et de transformation 

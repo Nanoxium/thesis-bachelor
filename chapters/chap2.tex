@@ -11,16 +11,16 @@ maillage que l'on a implémenté.
 \section{Nettoyage}
 
 L'utilité de réduire la quantité de données sauvegardées de nos jours au vu des 
-moyens de stockage moderne employés n'est plus une occupation majeure.
+moyens de stockage modernes employés n'est plus une occupation majeure.
 Cependant, certains systèmes d'information restent limités en mémoire et en
 puissance de calcul notamment les smartphones ou encore les ordinateurs portables.
 Dans ces cas, 
 % c'est à ce moment qu'intervient un nettoyage de données.
-Le nettoyage des données \gls{lidar} est aussi utile sur des systèmes plus puissants
+le nettoyage des données \gls{lidar} est aussi utile sur des systèmes plus puissants
 pour accélérer l'utilisation ultérieure des fichiers par la quantité réduite
 d'information.
 Les méthodes présentées ici ne sont pas exhaustives et peuvent être utilisées
-de manière indépendante ou bien combinées ensemble.
+de manière indépendante ou bien combinées ensembles.
 
 \subsection{Lidar}
 
@@ -36,8 +36,8 @@ de stockage supplémentaire.
 	\label{fig:lidar_noise}
 \end{figure}
 
-Les méthodes de nettoyage présenté ici ce concentre sur les impulsions à retour
-multiple vu au chapitre 1.
+Les méthodes de nettoyage présentées ici se concentrent sur les impulsions à retour
+multiples vues au chapitre 1.
 
 Une impulsion peut donc avoir plusieurs retours. Cela est dû au fait que la
 lumière frappe des objets superposés verticalement. Comme on peut le voir sur 
@@ -59,7 +59,9 @@ Ces impulsions à retour multiple peuvent être nombreuses en présence d'arbres
 À la place d'avoir plusieurs échos, on les remplace par un seul point qui est la
 position moyenne des retours.
 
-En terme mathématique, on a donc : 
+
+% Y'A TOUJOURS UN S A MATHEMATIQUES !!! ;-)
+En termes mathématiques, on a donc : 
 $$
 P = 
 \begin{pmatrix}
@@ -84,7 +86,7 @@ Où $n$ désigne le nombre de retour d'une impulsion et $p$ les points de l'impu
 \subsubsection{Nettoyage par point pondéré}
 
 Une autre méthode similaire au point moyen consiste à refaire la moyenne des
-positions des voisins, mais pondérée par l'intensité d'un retour.
+positions des voisins, où chaque élément de la moyenne est pondérée par l'intensité du retour.
 % En d'autres termes $$ P_{\bar{y}} = \frac{1}{n} \sum_{i=0}^{n} p_{iy} $$
 % où $n$ est le nombre de voisins d'un point $P$. 
 % Le choix de l'endroit où l'on créera le point peut être déterminé à l'aide d'une condition,
@@ -145,13 +147,26 @@ On aperçoit que les points ont tendance à moins osciller dans l'axe vertical.
     \label{fig:after_las_filter}
 \end{figure}
 
+\subsection{Décimation de maillage}
+
+La décimation de maillage consiste à supprimer des sommets d'un maillage afin
+de réduire le nombre de triangle présent et de réduire la complexité du modèle.
+
+Une méthode pour cela consiste à faire une moyenne de la distance d'un site par
+rapport aux autres. Si elle dépasse un certain seuil epsilon, on regroupe ce
+site et ses voisins en un point. La position de ce nouveau point est la moyenne
+des positions.
+
+À la fin de ces opérations qui sont répétés sur l'ensemble des sommets d'un maillage,
+on applique une nouvelle triagulation afin de former de nouveaux triangles.
+
 \section{Triangulation de Delaunay}
 Dans cette section, on détaille les algorithmes de reconstruction de surface.
 Il existe plusieurs manières de créer le même résultat, mais une méthode utilisée est la triangulation de Delaunay.
 La triangulation de Delaunay est une manière de créer des triangles entre des points dispersés dans l’espace.
 Cette manière de trianguler les points permet de créer un résultat plus homogène que d’autres méthodes.
 On peut observer des résultats différents dans la figure
-\ref{fig:triangulation_example}
+\ref{fig:triangulation_example}.
 
 \begin{figure}[htb!]
     \centering
@@ -159,6 +174,14 @@ On peut observer des résultats différents dans la figure
     \caption{Deux triangulations appliquées sur même jeu de données. Source : tiré de ref URL03}
     \label{fig:triangulation_example}
 \end{figure}
+
+Une triangulation est de Delaunay si et seulement si la condition de Delaunay est
+vraie. Elle est la suivante : tous les cercles circonscrits des triangles du 
+réseau sont \textit{vides}.
+
+Un triangle est vide si et seulement si aucun sommet autre que les siens
+réside strictement dans le cercle circonscrit. Donc d'autre points peuvent être
+sur le périmètre du cercle circonscrit.
 
 \subsection{Bowyer-Watson}
 L'algorithme de Bowyer-Watson est conceptuellement simple.
@@ -169,7 +192,8 @@ Après chaque ajout, de nouveaux triangles sont formés à partir du point ajout
 Soit $\mathcal{P} \subset \mathbb{R}^2$ l'ensemble des points à trianguler et $\mathcal{T}$ les triangles appartenant à la triangulation.
 On construit dans un premier temps, un triangle $S \in \mathcal{T}$ tel que $\mathcal{P} \subset S$.
 On nomme ce triangle le "super-triangle".
-Il doit contenir en son sein l'ensemble des points $\mathcal{P}$. On ajoute donc trois points, les sommets de $S$ dans $\mathcal{P}$.
+Il doit contenir en son sein l'ensemble des points de $\mathcal{P}$.
+On ajoute donc trois points, les sommets de $S$ à $\mathcal{P}$.
 
 \begin{figure}[htbp!]
     \centering
@@ -179,9 +203,22 @@ Il doit contenir en son sein l'ensemble des points $\mathcal{P}$. On ajoute donc
 	\label{fig:triangulation_step_3}
 \end{figure}
 
-On prend ensuite un point de $\mathcal{P}$ puis on détermine dans quel triangle il se situe.
-Pour connaître l'appartenance d'un point dans un triangle, on détermine si un point est contenu dans le cercle circonscrit dudit triangle.
-La condition qui permet de déterminer si un point $D$ est contenu dans le cercle-circonscris de $\triangle ABC$ est la suivante :
+On prend ensuite un point de $\mathcal{P}$ puis on vérifie la condition de
+Delaunay.
+
+%% ######################################
+%%
+%% I'm not sure that's right. 
+%% => Un point P peut se trouver dans le cercle circonscrit d'un triangle mais 
+%% pas forcément inclus aussi dans le triangle.... Ca pourrait marcher avec un cercle inscrit mais ca ne contiendrait pas toute la surface du triangle.
+%% Pour vérifier si un point P est contenu dans un triangle
+%% il faut considérer les arrêtes du triangle comme 3 vecteurs indépendants 
+%% et calculer les produits vectoriels AB*AP, BC*BP et CA*CP. i les trois vecteurs résultants pointent dans la même direction (vers le triangle ou en dehors du triangle), le point est contenu dans le triangle. Sinon, non.
+%% Check: https://math.stackexchange.com/questions/51326/determining-if-an-arbitrary-point-lies-inside-a-triangle-defined-by-three-points
+%%
+%% ######################################
+% Pour connaître l'appartenance d'un point dans un triangle, on détermine si un point est contenu dans le cercle circonscrit dudit triangle.
+La condition qui permet de déterminer si un point $D$ est contenu dans le cercle circonscrit de $\triangle ABC$ est la suivante :
 
 \begin{figure}[htbp!]
     \centering
@@ -196,7 +233,7 @@ $$
  A_x - D_x & A_y - D_y & (A_x - D_x)^2 + (A_y - D_y)^2 \\
  B_x - D_x & B_y - D_y & (B_x - D_x)^2 + (B_y - D_y)^2 \\
  C_x - D_x & C_y - D_y & (C_x - D_x)^2 + (C_y - D_y)^2 \\
-\end{vmatrix} \geqslant 0
+\end{vmatrix} > 0
 $$
 
 Si la condition est vraie, le point est relié au sommet du triangle qui le contient.
@@ -244,7 +281,7 @@ On peut observer le résultat de la triangulation dans la figure \ref{fig:triang
 
 \subsection{Lee \& Schachter}
 
-L'algorithme de Lee et Schachter est basé sur le principe de "Divide and conquer".
+L'algorithme de Lee et Schachter est basé sur le principe appelé "Diviser pour reigner".
 Le principe consiste à former des petites triangulations à partir d'un espace divisé selon un axe.
 On applique une triangulation pour la première itération.
 Ensuite, on fusionne les triangulations entre elles et l'on répète ces étapes jusqu'à ne plus pouvoir en fusionner.
@@ -270,14 +307,19 @@ L'arrête créée est nommée "base LR". On a donc une situation similaire à l'
 On poursuit par la recherche d'un site candidat voisin d'une des extrémités de la base LR qui respecte les conditions suivantes:
 
 \begin{enumerate}
-    \item L'angle ,dans le sens antihoraire pour un site de $M_R$ et dans le sens horaire pour un site de $M_L$, par rapport à la base LR est inférieur à 180°.
+    %% ######################################
+    %%
+    %% Sens antihoraire === sens trigonométrique (better in this scenario I presume)
+    %%
+    %% ######################################
+    \item L'angle, dans le sens direct pour un site de $M_R$ et dans le sens indirect pour un site de $M_L$, par rapport à la base LR est inférieur à 180°.
     \item Le cercle circonscrit défini par les deux extrémités de la base et l'une des extrémités avec un candidat ne contient pas un prochain candidat potentiel en son sein.
 \end{enumerate}
 
 Si les deux conditions sont satisfaites, le site devient un candidat final pour le maillage en question.
 Si la première condition n'est pas respectée, aucun candidat pour le maillage n'est choisi et l'arrête reliant le candidat actuel avec la base est supprimé de la triangulation.
 
-Le processus de choix d'un candidat se poursuit tant qu'aucun candidat final ne soit choisi ou qu'on détermine qu'aucun candidat ne peut être choisi.
+Le processus de choix d'un candidat se poursuit tant qu'aucun candidat final n'est choisi ou que l'on détermine qu'aucun candidat ne peut être choisi.
 
 Les illustrations \ref{fig:site_ML_candidate} et \ref{fig:site_MR_candidate} représente le choix d'un candidat final pour chaque maillage. Cela ne représente que la première itération.
 \begin{figure}[htbp!]
@@ -294,6 +336,6 @@ Les illustrations \ref{fig:site_ML_candidate} et \ref{fig:site_MR_candidate} rep
     \label{fig:site_MR_candidate}
 \end{figure}
 
-Une fois que les candidats pour chaque maillage ont été déterminés, si un seul candidat final est présent, on lie le candidat par une arête avec le site de la base du maillage opposé. Dans le cas où deux candidats sont choisis, on détermine un dernier test. On vérifie qu'un candidat final n'est pas contenu dans le cercle circonscrit de l'autre. Si c'est le cas, le candidat qui contient le site dans le cercle circonscrit est alors abandonné et celui qui n'en contient pas est utilisé pour créer une nouvelle base. On peut observer que dans le la figure \ref{fig:site_ML_candidate} le site $I$ est contenus dans le cercle circonscrit formé par les points $F, E$ et $L$. Dans ce cas, le site $E$ n'est pas maintenu en tant que candidat final et une arrête entre $I$ et $F$ est créée. Celle-ci devient alors la nouvelle base.
+Une fois que les candidats pour chaque maillage ont été déterminés, si un seul candidat final est présent, on lie le candidat par une arête avec le site de la base du maillage opposé. Dans le cas où deux candidats sont choisis, on détermine un dernier test. On vérifie qu'un candidat final n'est pas contenu dans le cercle circonscrit de l'autre. Si c'est le cas, le candidat qui contient le site dans le cercle circonscrit est alors abandonné et celui qui n'en contient pas est utilisé pour créer une nouvelle base. On peut observer que dans la figure \ref{fig:site_ML_candidate} le site $I$ est contenu dans le cercle circonscrit formé par les points $F, E$ et $L$. Dans ce cas, le site $E$ n'est pas maintenu en tant que candidat final et une arrête entre $I$ et $F$ est créée. Celle-ci devient alors la nouvelle base.
 
 Les opérations de recherche de candidat et de création d'arêtes continuent jusqu'à ce que plus aucun candidat final ne soit obtenu.

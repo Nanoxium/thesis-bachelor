@@ -2,25 +2,25 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction} % Adding toc entry
 \subsection*{Contexte}
-Depuis l'antiquité à nos jours, les cartes sont le reflet des premières formes de données récoltées par l'Homme.
+De l'antiquité à nos jours, les cartes sont le reflet des premières formes de données récoltées par l'Homme.
 La cartographie a aidé l'humanité à définir des chemins à travers le monde et à naviguer.
 Cependant avec les fortes avancées technologiques des dernières décennies,
 les données récoltées ont augmenté massivement et notamment dans la cartographie avec les données LIDAR.
-Ces dernières représentent un nuage de points dense qui sont actuellement une des informations collectées des plus massives.
-Elles sont utilisées dans l'étude topographique de régions, dans les géosciences,
-dans la science environnementale ou bien encore elles viennent en aide au guidage automatique de véhicule terrestre.
-Un problème fréquent lié à ces données est le traitement réalisé avant leurs
-utilisations dans des applications, qui est souvent nécessaire afin de nettoyer
+Ces dernières représentent un nuage de points dense qui est actuellement une des informations collectées les plus massives.
+Ces informations sont utilisées dans l'étude topographique de régions, dans les géosciences,
+dans la science environmentale ou bien encore, viennent en aide au guidage automatique de véhicules terrestres.
+Un problème fréquent lié à ces données est le traitement réalisé avant leur
+utilisation dans des applications, qui est souvent nécessaire afin de nettoyer
 tout ce qui ne présente aucune utilité et pourrait même fausser les résultats.
-Il reste cependant difficile de les traiter manuellement due à la quantité de données importante.
+Il reste cependant difficile de les traiter manuellement du à la quantité de données importante.
 Pour ce faire, des méthodes analytiques sont employées afin d'accélérer ce processus au travers de systèmes automatisés.
-Un autre problème présent est leurs utilisations pour reconstruire des surfaces.
-Les méthodes automatisées n'étant pas totalement fiables, il est nécessaire de
+Un autre problème présent est leur utilisation pour reconstruire des surfaces.
+Les méthodes automatisées n'étant pas encore totalement fiables, il est nécessaire de
 vérifier la cohérence des données ainsi que la qualité des reconstructions de
 surface.
 
 Ce travail de bachelor est une continuation d'un projet de semestre effectué sur
-la reconstruction de surface à partir de données lidar. Les données lidar sont misent à disposition par le \gls{sitg} et sont utilisés
+la reconstruction de surface à partir de données lidar. Les données lidar sont mises à disposition par le \gls{sitg} et sont utilisées
 avec la triangulation de Delaunay pour créer des maillages reconstruisant les
 surfaces des régions.
 
@@ -34,16 +34,23 @@ de mettre en oeuvre ces outils grâce au langage de programmation Rust sur un
 stack d'application entier (un seul langage pour le serveur et le client).
 
 \subsection*{Méthodologie}
-Dans un premier temps nous avons recherché des algorithmes de
-traitement de données lidar. Nous avons par la suite implémenté ceux que nous
-pensions judicieux d'être présent dans l'application.
-Enfin nous avons testé ces algorithmes sur un jeu de données et fait des mesure
+Dans un premier temps nous avons rechercher des algorithmes de
+%% ######################################
+%%
+%% Check format again...
+%% Proposed solution: Nous allons par la suite implémenter les algorithmes que nous considérons comme judicieux au sein de notre application.
+%%
+%% ######################################
+traitement de données lidar.
+Nous allons par la suite implémenter les algorithmes que nous considérons comme judicieux au sein de notre application.
+% Nous allons par la suite implémenter ce que nous pensions judicieux d'être présent dans l'application.
+Enfin nous allons tester ces algorithmes sur un jeu de données et en ressortir des mesures
 de performance.
 
 Dans ce mémoire, nous allons en un premier détailler les formats de fichier 
 rencontrés dans l'application.
-Ensuite nous détaillerons les méthodes algorithmiques misent en oeuvre pour
+Ensuite nous détaillerons les méthodes algorithmiques mises en oeuvre pour
 réaliser des traitements sur lesdits fichiers.
-Enfin nous allons voir comment ces dernières ont été implémenté dans
-l'application et comparer leurs résultats.
-Les sources des implémentation sont disponible à l'adresse: \href{https://githepia.esge.ch/jerome.chetelat/meshtools}{https://githepia.hesge.ch/jerome.chetelat/meshtools}
+Enfin nous verrons comment ces dernières ont été implémentées dans
+l'application puis nous comparerons leurs résultats.
+Les sources des implémentations sont disponibles à l'adresse: \href{https://githepia.esge.ch/jerome.chetelat/meshtools}{https://githepia.hesge.ch/jerome.chetelat/meshtools}

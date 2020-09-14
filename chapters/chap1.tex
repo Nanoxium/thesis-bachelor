@@ -1,7 +1,6 @@
-Dans ce chapitre nous allons aborder les différents formats de données qui seront
-et utilisés dans la suite de ce document.
+Dans ce chapitre nous allons aborder les différents formats de données qui seront utilisés dans la suite de ce document.
 
-\section{Nuage de point}
+\section{Nuage de points}
 Un nuage de points est un ensemble de points de données dans un système de
 coordonnées à trois dimensions. Il est généralement produit à partir d'un
 instrument de \gls{lidar} ou en français détection et estimation de la distance
@@ -19,7 +18,7 @@ dirigée vers le bas, il est ainsi possible de capturer, sous forme d'un nuage d
 points, une région du globe. Ce cas nécessite de connaître la position
 \gls{gps} du véhicule au moment de la capture d'un point afin de mettre en relation
 tous les points à la fin de la mesure.
-Il existe différentes versions de la spécification et ce document va se concentrer sur la version un point deux.
+Il existe différentes versions de la spécification mais ce document va se concentrer sur la version 1.2 uniquement.
 
 \subsection{Format LIDAR}
 Le format de stockage des nuages de points de données \gls{lidar}, est un format
@@ -67,7 +66,6 @@ Dans toutes les sections, on définit les types de données dans le tableau \ref
 \end{table}
 
 \subsection{En-tête public}
-
 L'en-tête public comporte les métadonnées du fichier.
 Il est composé de tous les champs du tableau~\ref {tab:las_header} présent dans l'annexe~1. Ils sont tous encodés en mode little endian.
 Tous les champs inutilisés doivent être remplis par des bits nuls.
@@ -169,8 +167,15 @@ Chaque impulsion peut recevoir plusieurs retours d'où le champ "Number of retur
 Il est aussi nécessaire de connaître l'angle de l'appareil par rapport à l'horizon afin de corriger la position du point récolté, car seul l'angle de l'instrument de mesure ne suffit pas.
 Cet angle est en degré et allant de -90° à +90° à partir de l'aile gauche de l'aéronef dans le sens du vol.
 
-Le format un ajoute simplement des informations concernant le temps \gls{gps} à laquelle le point a été enregistré.
-Il est de même des autres format cependant ces informations ne sont pas utiles pour ce travail.
+
+%% ######################################
+%%
+%% Read again here, not sure about the phrase format.
+%% Proposed solution: ==> Le format 1 ajoute simplement des informations concernant le temps \gls{gps} dans lesquelles / auxquelles le point a été enregistré.
+%%
+%% ######################################
+Le format 1 ajoute des informations concernant le temps \gls{gps} durant lequel le point a été enregistré.
+Les autres formats ajoute d'autres champs, cependant ces informations ne sont pas utiles pour ce travail.
 
 \subsection{Classification des points}
 
@@ -178,7 +183,7 @@ Les points collectés sont généralement classés selon le type de sol rencontr
 Toutes les informations concernant le classement sont contenues en un octet et  en quatre sections. Elles sont expliquées dans le tableau \ref{tab:las_class_byte_explanation}.
 
 Les cinq premiers bits correspondent à une table standard des classifications.
-Si le bit cinq à un, le point a été créé par un logiciel de manière synthétique et si le bit sept est aussi à un, le point ne doit pas être pris en compte. Il est considéré comme étant supprimé.
+Si le bit 5 est à un, le point a été créé par un logiciel de manière synthétique et si le bit 7 est aussi à un, le point ne doit pas être pris en compte. Il est considéré comme étant supprimé.
 
 \begin{table}[!h]
 \centering
@@ -230,7 +235,7 @@ Ce format ne décrit que la géométrie de la surface d'un modèle.
 Il existe un format binaire et un format ASCII, le dernier laissant une empreinte dans la mémoire morte plus conséquente.
 
 On y stocke les triangles composant le modèle où chaque sommet du triangle est décrit par ses coordonnées cartésiennes $(x,y,z)$. Chaque triangle partage, sans exception, deux sommets avec un triangle voisin.
-La coordonnée dans l'axe $z$ est considérée comme l'axe vertical, ceci peut être gênant pour les programmes considérant l'axe $y$ comme l'axe vertical.
+La coordonnée dans l'axe $z$ est considérée comme l'axe vertical, ceci peut être gênant pour les programmes considérant l'axe $y$ comme axe vertical.
 
 \subsection{Format ASCII}
 
@@ -256,7 +261,7 @@ La fin du fichier ASCII est définie par la séquence : "end solid".
 
 Le format binaire présente un avantage considérable par rapport au format ASCII, il est beaucoup moins volumineux. 
 
-Les 80 premiers octets sont un commentaire. Les quatre suivants sont un entier 32 bits qui indique le nombre de triangles présent dans le fichier.
+Les 80 premiers octets sont un commentaire. Les quatre suivants sont un entier 32 bits qui indique le nombre de triangles présents dans le fichier.
 Chaque triangle est encodé sur 50 octets. Comme le format ASCII, les nombres sont encodés conformément à la spécification IEEE-754 et en mode little endian.
 
 Le format dans le fichier est le suivant : 

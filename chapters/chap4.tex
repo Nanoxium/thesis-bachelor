@@ -59,7 +59,7 @@ l'implémentation de Bowyer-Watson.
 \subsection{Fusion de triangulation}
 
 Les résultats de la fusion ne sont pas disponibles, car le binaire actuel ne
-soumets pas de fichier de sortie.
+soumet pas de fichiers de sortie.
 
 On peut observer le flamegraph de la figure \ref{fig:flamegraph_mesh_merge}
 du binaire ou le programme reste bloqué dans la méthode \textit{get\_side\_candidate}
@@ -124,8 +124,8 @@ Voici les résultats obtenus:
 \label{tab:las_cleaning_ponderated}
 \end{table}
 
-On n’observe aucune différence de taille de sortie ni de nombre de points supprimés entre les deux méthodes.
-Cela s'explique de par le choix de la méthode de nettoyage.
+On observe aucune différence de taille de sortie ni de nombre de points supprimés entre les deux méthodes.
+Cela s'explique par le choix de la méthode de nettoyage.
 Ici le nombre d'impulsions à retour multiple reste constant et donc le nombre de points à supprimer ne varie pas.
 
 Cependant, on observe des différences de position des points lidars dans les figures de l'annexe 5.
@@ -156,7 +156,7 @@ Voici les résultats obtenus sur un maillage comportant une route:
     \label{fig:mesh_noise_diff}
 \end{figure}
 
-On observe dans les images précédentes que le lissage rend les surfaces planes et que les pics ne perdent pas d'élévation passée un certain $\epsilon$.
+On observe dans les images précédentes que le lissage rend les surfaces planes et que les pics ne perdent pas d'élévation au-dessus d'un certain $\epsilon$.
 
 \subsection{Décimation de maillage}
 
@@ -179,14 +179,14 @@ Cependant, on peut voir que le contour de la partie blanche laisse imaginer qu'i
 
 On y observe aussi que dans un tableau de \textit{Float32} se trouve 300'000 valeurs qui correspondent aux 100'000 sommets du maillage (une valeur par composante de la position d'un point).
 
-\textbf{Amélioration possible} \\
+\textbf{Améliorations possibles} \\
 Le chargement des vertex du maillage se faisant dans un seul file d'exécution,
-la page lors du chargement reste figée et peut ne plus répondre (dépends de la
+la page lors du chargement reste figée et peut ne plus répondre (dépend de la
 puissance de l'hôte) .
 Il serait possible dans un futur proche de faire ces opérations dans des WebWorkers. Au
-moment de l'écriture de ce mémoire, l'utiliser des WebWorkers
-en Rust sont encore expérimentales.
+moment de l'écriture de ce mémoire, l'utilisation des WebWorkers
+en Rust est encore expérimentale.
 
-Une autre amélioration à faire serait de réaliser le calcule des ombres afin d'afficher les reliefs du maillage.
+Une autre amélioration à faire serait de réaliser le calcul des ombres afin d'afficher les reliefs du maillage.
 Ou encore de donner des contrôles à l'utilisateur pour changer le point 
 de vue du maillage (angle et position de la caméra dans la scène).
