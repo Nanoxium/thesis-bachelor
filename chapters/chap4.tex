@@ -25,7 +25,7 @@ Pour la triangulation, on utilise deux fichiers:
 	\begin{tabular}{l|c|c|c|c|}
 		\cline{2-5}
 		\multicolumn{1}{c|}{}                              & Nb Points                    & \begin{tabular}[c]{@{}c@{}}Temps moyen\\ {[}s{]}\end{tabular} & Nb Trig                     & \begin{tabular}[c]{@{}c@{}}Taille de sortie\\ {[}Mb{]}\end{tabular} \\ \hline
-		\multicolumn{1}{|l|}{2501500\_1112000\_sample.las} & \multicolumn{1}{l|}{100'000} & \multicolumn{1}{c|}{6,646}                              & \multicolumn{1}{l|}{199928} & 9.6 Mb                                                              \\ \hline
+		\multicolumn{1}{|l|}{2501500\_1112000\_sample.las} & \multicolumn{1}{l|}{100'000} & \multicolumn{1}{c|}{6,646}                              & \multicolumn{1}{l|}{199928} & 9,6 Mb                                                              \\ \hline
 		\multicolumn{1}{|l|}{2501500\_1112000.las}         & 9'000'987                    & N/A                                                           & N/A                         & N/A                                                                 \\ \hline
 	\end{tabular}
 	\caption{Résultats de la triangulation avec l'algorithme Bowyer-Watson}
@@ -49,7 +49,7 @@ l'implémentation de Bowyer-Watson.
 	\begin{tabular}{l|c|c|c|c|}
 		\cline{2-5}
 		\multicolumn{1}{c|}{}                              & Nb Points                    & \begin{tabular}[c]{@{}c@{}}Temps moyen\\ {[}s{]}\end{tabular} & Nb Trig                      & \begin{tabular}[c]{@{}c@{}}Taille de sortie\\ {[}Mb{]}\end{tabular} \\ \hline
-		\multicolumn{1}{|l|}{2501500\_1112000\_sample.las} & \multicolumn{1}{l|}{100'000} & \multicolumn{1}{c|}{0,0513}                             & \multicolumn{1}{c|}{199'928} & 9.6                                                                 \\ \hline
+		\multicolumn{1}{|l|}{2501500\_1112000\_sample.las} & \multicolumn{1}{l|}{100'000} & \multicolumn{1}{c|}{0,0513}                             & \multicolumn{1}{c|}{199'928} & 9,6                                                                 \\ \hline
 		\multicolumn{1}{|l|}{2501500\_1112000.las}         & 9'000'987                    & 9,548                                                   & 18'001'310                   & 859                                                                 \\ \hline
 	\end{tabular}
 	\caption{Résultats de la triangulation avec l'algorithme delaunator}
@@ -104,8 +104,8 @@ Voici les résultats obtenus:
 \begin{tabular}{l|c|c|c|c|c|}
 \cline{2-6}
 \multicolumn{1}{c|}{}                      & Nb Points & Temps  & Points supprimés & Taille originale & Taille de sortie \\ \hline
-\multicolumn{1}{|l|}{2488500\_1111500.las} & 8'570'137 & 4.67 s & 1'147'625        & 229 Mo          & 199 Mo           \\ \hline
-\multicolumn{1}{|l|}{2499000\_1118000.las} & 9'336'496 & 4.96 s & 1'000'136        & 250 Mo          & 223 Mo           \\ \hline
+\multicolumn{1}{|l|}{2488500\_1111500.las} & 8'570'137 & 4,67 s & 1'147'625        & 229 Mo          & 199 Mo           \\ \hline
+\multicolumn{1}{|l|}{2499000\_1118000.las} & 9'336'496 & 4,96 s & 1'000'136        & 250 Mo          & 223 Mo           \\ \hline
 \end{tabular}
 \caption{Résultats du nettoyage par point moyen}
 \label{tab:las_cleaning_avg}
@@ -117,8 +117,8 @@ Voici les résultats obtenus:
 \begin{tabular}{l|c|c|c|c|c|}
 \cline{2-6}
 \multicolumn{1}{c|}{}                      & Nb Points & Temps  & Points supprimés & Taille originale & Taille de sortie \\ \hline
-\multicolumn{1}{|l|}{2488500\_1111500.las} & 8'570'137 & 4.87 s & 1'147'625        & 229 Mo          & 199 Mo           \\ \hline
-\multicolumn{1}{|l|}{2499000\_1118000.las} & 9'336'496 & 5.03 s & 1'000'136        & 250 Mo          & 223 Mo           \\ \hline
+\multicolumn{1}{|l|}{2488500\_1111500.las} & 8'570'137 & 4,87 s & 1'147'625        & 229 Mo          & 199 Mo           \\ \hline
+\multicolumn{1}{|l|}{2499000\_1118000.las} & 9'336'496 & 5,03 s & 1'000'136        & 250 Mo          & 223 Mo           \\ \hline
 \end{tabular}
 \caption{Résultats du nettoyage par point pondéré}
 \label{tab:las_cleaning_ponderated}
