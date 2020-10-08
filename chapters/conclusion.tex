@@ -2,33 +2,51 @@
 \chapter*{Conclusion}
 \addcontentsline{toc}{chapter}{Conclusion} % Adding toc entry
 
-Ce travail avait pour objectif de créer et de mettre à disposition des outils pour manipuler les données \gls{lidar} ainsi qu'une interface web pour afficher certaines données.
+Ce travail avait pour objectif de créer et de mettre à disposition des outils pour manipuler les données LIDAR ainsi qu’une interface web pour afficher certaines données.
 Les outils devaient pouvoir nettoyer des données \gls{lidar} et les trianguler de manière efficace, de filtrer et fusionner des maillages.
-Pour cela, on a du en premier explorer les formats de fichier \gls{lidar} et
-\gls{stl}.
-Ensuite nous avons explorer les algorithmes qui allait être implémentées dans
-l'application comme l'algorithme de Bowyer-Watson qui permet de faire une
-triangulation de Delaunay et l'algorithme de Lee \& Schachter pour la fusion de
-triangulation. Nous avons aussi vu les différentes méthodes de nettoyage de
-données pour réduire la taille des fichiers utilisés et éviter de fausser les
-résultat dans leur utilisation ultérieur. Par la suite nous avons implémenté ces
-méthodes dans des outils en ligne de commande qui ont été implémentées dans le langage Rust.
-Ce dernier permet de compiler pour des plateformes inhabituelles pour un langage système tel que le web et grâce à cela,
-nous avons réaliser un serveur de fichier et un client web pour afficher des
-maillages.
-Nous avons ensuite testé nos outils et comparé les résultats obtenus et
-vu que les méthodes de nettoyage donnait des résultats numériques similaire mais
-visuels différents. L'algorithme de Bowyer-Watson donnait un résultat pour
-un nombre de points limité mais lorsqu'on passait à un jeu de donnée complet, aucun
-résultat n'a été trouvé au vu du temps de calculs trop important. 
-On avait vu que le serveur de fichier servait des fichiers au client web qui les
-affiche à l'aide de WebGL.
+Pour cela, on a dû en premier explorer les formats de fichier \gls{lidar} et \gls{stl}.
+Ensuite, nous avons exploré les algorithmes qui allaient être implémentés dans l’application comme l’algorithme de Bowyer-Watson qui permet de faire une triangulation de Delaunay et l’algorithme de Lee \& Schachter pour la fusion de triangulation.
+Nous avons aussi vu les différentes méthodes de nettoyage de données pour réduire la taille des fichiers utilisés et éviter de fausser les résultats dans leur utilisation ultérieure.
+Par la suite, nous avons implémenté ces méthodes dans des outils en ligne de commande qui ont été implémentées dans le langage Rust.
+Ce dernier permet de compiler pour des plateformes inhabituelles pour un langage système tel que le web et grâce à cela, nous avons réalisé un serveur de fichier et un client web pour afficher des maillages.
+Nous avons ensuite testé nos outils et comparé les résultats obtenus et vu que les méthodes de nettoyage donnaient des résultats numériques similaires, mais visuels différents.
+L’algorithme de Bowyer-Watson donnait un résultat pour un nombre de points limité, mais lorsqu’on passait à un jeu de donnée complet, aucun résultat n’a été trouvé au vu du temps de calcul trop important.
+On avait vu que le serveur de fichier servait des fichiers au client web qui les affiche à l’aide de WebGL.
 Certains outils comme le client web sont encore inachevés et nécessitent des corrections pour fonctionner correctement.
-La réalisation de ce travail m'a permis de mettre en oeuvre l'enseignement reçu lors de ma formation ainsi que d'enrichir mes connaissances dans le domaine de la topographie numérique.
-J'ai pu aussi utiliser le langage Rust que je compte désormais utiliser de manière régulière pour mes projets personnels, car l'écosystème, malgré son manque de maturité, rend le développement de logiciels facile et amusant.
-Ce travail était aussi un challenge, non seulement à cause du covid19, mais aussi de par l'ampleur du projet qui dépasse tout ce que j'ai pu rencontrer auparavant.
+La réalisation de ce travail m’a permis de mettre en oeuvre l’enseignement reçu lors de ma formation ainsi que d’enrichir mes connaissances dans le domaine de la topographie numérique.
+J’ai pu aussi utiliser le langage Rust que je compte désormais utiliser de manière régulière pour mes projets personnels, car l’écosystème, malgré son manque de maturité, rend le développement de logiciels facile et amusant.
+Ce travail était aussi un challenge, non seulement à cause du covid19, mais aussi par l’ampleur du projet qui dépasse tout ce que j’ai pu rencontrer auparavant.
+Le travail étant partiellement inachevé, un futur travail pourrait reprendre le projet et terminer ce qui n’est pas encore complet, 
+mais aussi rajouter de nouvelles fonctionnalités comme la gestion de nouveaux formats de données de maillages ou encore l’optimisation de certains algorithmes implémentés afin de pouvoir véritablement gagner en performance.
 
-Le travail étant partiellement inachevé, un futur travail pourrait reprendre le projet et
-terminer ce qui n'est pas encore complet, mais aussi rajouter de nouvelles
-fonctionnalités comme la gestion de nouveaux formats de données de maillages ou encore l'optimisation de certains algorithmes implémentés 
-afin de pouvoir véritablement gagner en performance.
+
+% Ce travail avait pour objectif de créer et de mettre à disposition des outils pour manipuler les données \gls{lidar} ainsi qu'une interface web pour afficher certaines données.
+% Les outils devaient pouvoir nettoyer des données \gls{lidar} et les trianguler de manière efficace, de filtrer et fusionner des maillages.
+% Pour cela, on a du en premier explorer les formats de fichier \gls{lidar} et
+% \gls{stl}.
+% Ensuite nous avons explorer les algorithmes qui allait être implémentées dans
+% l'application comme l'algorithme de Bowyer-Watson qui permet de faire une
+% triangulation de Delaunay et l'algorithme de Lee \& Schachter pour la fusion de
+% triangulation. Nous avons aussi vu les différentes méthodes de nettoyage de
+% données pour réduire la taille des fichiers utilisés et éviter de fausser les
+% résultat dans leur utilisation ultérieur. Par la suite nous avons implémenté ces
+% méthodes dans des outils en ligne de commande qui ont été implémentées dans le langage Rust.
+% Ce dernier permet de compiler pour des plateformes inhabituelles pour un langage système tel que le web et grâce à cela,
+% nous avons réaliser un serveur de fichier et un client web pour afficher des
+% maillages.
+% Nous avons ensuite testé nos outils et comparé les résultats obtenus et
+% vu que les méthodes de nettoyage donnait des résultats numériques similaire mais
+% visuels différents. L'algorithme de Bowyer-Watson donnait un résultat pour
+% un nombre de points limité mais lorsqu'on passait à un jeu de donnée complet, aucun
+% résultat n'a été trouvé au vu du temps de calculs trop important. 
+% On avait vu que le serveur de fichier servait des fichiers au client web qui les
+% affiche à l'aide de WebGL.
+% Certains outils comme le client web sont encore inachevés et nécessitent des corrections pour fonctionner correctement.
+% La réalisation de ce travail m'a permis de mettre en oeuvre l'enseignement reçu lors de ma formation ainsi que d'enrichir mes connaissances dans le domaine de la topographie numérique.
+% J'ai pu aussi utiliser le langage Rust que je compte désormais utiliser de manière régulière pour mes projets personnels, car l'écosystème, malgré son manque de maturité, rend le développement de logiciels facile et amusant.
+% Ce travail était aussi un challenge, non seulement à cause du covid19, mais aussi de par l'ampleur du projet qui dépasse tout ce que j'ai pu rencontrer auparavant.
+% 
+% Le travail étant partiellement inachevé, un futur travail pourrait reprendre le projet et
+% terminer ce qui n'est pas encore complet, mais aussi rajouter de nouvelles
+% fonctionnalités comme la gestion de nouveaux formats de données de maillages ou encore l'optimisation de certains algorithmes implémentés 
+% afin de pouvoir véritablement gagner en performance.

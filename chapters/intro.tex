@@ -1,7 +1,6 @@
 % !TeX spellcheck = fr_FR
 \chapter{Introduction}
-% \addcontentsline{toc}{chapter}{Introduction} % Adding toc entry
-\subsection{Contexte}
+%\addcontentsline{toc}{chapter}{Introduction} % Adding toc entry
 De l'antiquité à nos jours, les cartes sont le reflet des premières formes de données récoltées par l'Homme.
 La cartographie a aidé l'humanité à définir des chemins à travers le monde et à naviguer.
 Cependant avec les fortes avancées technologiques des dernières décennies,
@@ -17,34 +16,25 @@ Pour ce faire, des méthodes analytiques sont employées afin d'accélérer ce p
 Un autre problème présent est leur utilisation pour reconstruire des surfaces.
 Les méthodes automatisées n'étant pas encore totalement fiables, il est nécessaire de
 vérifier la cohérence des données ainsi que la qualité des reconstructions de
-surface.
-
-Ce travail de bachelor est une continuation d'un projet de semestre effectué sur
-la reconstruction de surface à partir de données lidars. Les données lidar sont mises à disposition par le \gls{sitg} et sont utilisées
+surface. Ce travail de bachelor est une continuation d'un projet de semestre effectué sur
+la reconstruction de surface à partir de données lidars.
+Les données lidars sont mises à disposition par le \gls{sitg} et sont utilisées
 avec la triangulation de Delaunay pour créer des maillages reconstruisant les
 surfaces des régions.
 
-\subsection{Buts}
 Le but principal de ce travail est de créer une panoplie d'outils de traitement
-de fichiers lidars ainsi que de fichier stl. Ils doivent permettre à un
+de fichiers lidars ainsi que de fichier STL. Ils doivent permettre à un
 utilisateur de reconstruire des surfaces grâce à une triangulation sur un nuage
 de points, nettoyer des données lidar provenant d'un aéronef ainsi que
-d'afficher un fichier stl dans un navigateur web. Un objectif supplémentaire est
+d'afficher un fichier STL dans un navigateur web. Un objectif supplémentaire est
 de mettre en oeuvre ces outils grâce au langage de programmation Rust sur un
 stack d'application entier (un seul langage pour le serveur et le client).
 
-\subsection{Méthodologie}
 Dans un premier temps nous avons recherché des algorithmes de
-%% ######################################
-%%
-%% Check format again...
-%% Proposed solution: Nous allons par la suite implémenter les algorithmes que nous considérons comme judicieux au sein de notre application.
-%%
-%% ######################################
 traitement de données lidars.
-Nous allons par la suite implémenter les algorithmes que nous considérons comme judicieux au sein de notre application.
+Nous avions par la suite implémenté les algorithmes que nous considérons comme judicieux au sein de notre application.
 % Nous allons par la suite implémenter ce que nous pensions judicieux d'être présent dans l'application.
-Enfin nous allons tester ces algorithmes sur un jeu de données et en ressortir des mesures
+Enfin nous avions testé ces algorithmes sur un jeu de données et réalisé des mesures
 de performance.
 
 Dans ce mémoire, nous allons en premier détailler les formats de fichier 

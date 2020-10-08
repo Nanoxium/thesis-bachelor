@@ -1,6 +1,6 @@
 % !TeX spellcheck = fr_FR
 
-\chapter{Chapitre 4 : Résultats}
+\chapter{Résultats}
 Dans ce chapitre, nous allons voir les résultats obtenus par les
 différentes parties de l'application. On va aussi comparer les différentes
 métriques collectées des binaires.
@@ -25,7 +25,7 @@ Pour la triangulation, on utilise deux fichiers:
 	\begin{tabular}{l|c|c|c|c|}
 		\cline{2-5}
 		\multicolumn{1}{c|}{}                              & Nb Points                    & \begin{tabular}[c]{@{}c@{}}Temps moyen\\ {[}s{]}\end{tabular} & Nb Trig                     & \begin{tabular}[c]{@{}c@{}}Taille de sortie\\ {[}Mb{]}\end{tabular} \\ \hline
-		\multicolumn{1}{|l|}{2501500\_1112000\_sample.las} & \multicolumn{1}{l|}{100'000} & \multicolumn{1}{c|}{6,646}                              & \multicolumn{1}{l|}{199928} & 9,6 Mb                                                              \\ \hline
+		\multicolumn{1}{|l|}{2501500\_1112000\_sample.las} & \multicolumn{1}{l|}{100'000} & \multicolumn{1}{c|}{6,646}                              & \multicolumn{1}{l|}{199'928} & 9,6 Mb                                                              \\ \hline
 		\multicolumn{1}{|l|}{2501500\_1112000.las}         & 9'000'987                    & N/A                                                           & N/A                         & N/A                                                                 \\ \hline
 	\end{tabular}
 	\caption{Résultats de la triangulation avec l'algorithme Bowyer-Watson}
@@ -68,7 +68,7 @@ avant que ce dernier soit interrompu.
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/merge-debug-flamegraph.png}
-    \caption{Flamegraph du binaire mesh-merge. Source : réalisé par Jérôme Chételat}
+    \caption{Flamegraph du binaire mesh-merge. Source : réalisé par Jérôme Chételat.}
     \label{fig:flamegraph_mesh_merge}
 \end{figure}
 
@@ -82,9 +82,10 @@ L'idée serait de pouvoir aussi gérer le cas où les maillages peuvent se
 superposer.
 
 On a aussi le problème que l'algorithme ne s'applique que dans une direction
-pour créer des arrêtés. Le principe serait d'implémenter un choix de direction
+pour créer des arrêtes. Le principe serait d'implémenter un choix de direction
 pour appliquer la fusion.
 
+\newpage
 \section{Nettoyage}
 
 Le nettoyage de points est effectué sur deux fichiers lidars:
@@ -93,7 +94,7 @@ Le nettoyage de points est effectué sur deux fichiers lidars:
     \item 2499000\_1118000.las
 \end{enumerate}
 
-Pour les maillages on effectue les tests sur deux fichiers \gls{stl}, résultant des triangulations des fichiers précédent.
+Pour les maillages on effectue les tests sur deux fichiers \gls{stl}, résultant des triangulations des fichiers précédents.
 
 \subsection{Lidar}
 Voici les résultats obtenus:
@@ -124,32 +125,32 @@ Voici les résultats obtenus:
 \label{tab:las_cleaning_ponderated}
 \end{table}
 
-On observe aucune différence de taille de sortie ni de nombre de points supprimés entre les deux méthodes.
+On n’observe aucune différence de taille de sortie ni de nombre de points supprimés entre les deux méthodes.
 Cela s'explique par le choix de la méthode de nettoyage.
 Ici le nombre d'impulsions à retour multiple reste constant et donc le nombre de points à supprimer ne varie pas.
-
-Cependant, on observe des différences de position des points lidars ainsi que des zones moins dense en point
-dans les figures \ref{fig:lidar_aft_filt_avg}, \ref{fig:lidar_aft_filt_pond} en
-comparaison au fichier d'origine dans la figure \ref{fig:lidar_bef_filt}.
+\newpage
+Cependant, des différences de position des points lidars ainsi que des zones moins denses en point
+sont visibles dans les zones rouges des figures \ref{fig:lidar_aft_filt_avg}, \ref{fig:lidar_aft_filt_pond} en
+comparaison au fichier lidar d'origine dans la figure \ref{fig:lidar_bef_filt}.
 
 \begin{figure}[htbp!]
     \centering
 	\includegraphics[width=0.9\linewidth]{figures/filters/hepia_las.png}
-	\caption{Fichier lidars brute avec les batiments de l'HEPIA . Source : réalisé par Jérôme Chételat}
+	\caption{Fichier lidar brut avec les bâtiments de l'HEPIA. Source : réalisé par Jérôme Chételat.}
 	\label{fig:lidar_bef_filt}
 \end{figure}
 
 \begin{figure}[htbp!]
     \centering
 	\includegraphics[width=0.9\linewidth]{figures/filters/hepia_filtered_avg_las.png}
-	\caption{Fichier lidars avec HEPIA aprés nettoyage par point moyen . Source : réalisé par Jérôme Chételat}
+	\caption{Fichier lidar avec les bâtiments de l'HEPIA après nettoyage par point moyen. Source : réalisé par Jérôme Chételat.}
 	\label{fig:lidar_aft_filt_avg}
 \end{figure}
 
 \begin{figure}[htbp!]
     \centering
 	\includegraphics[width=0.9\linewidth]{figures/filters/hepia_filtered_pond_las.png}
-	\caption{Fichier lidars avec HEPIA aprés nettoyage par point pondéré . Source : réalisé par Jérôme Chételat}
+	\caption{Fichier lidar avec les bâtiments de l'HEPIA après nettoyage par point pondéré. Source : réalisé par Jérôme Chételat.}
 	\label{fig:lidar_aft_filt_pond}
 \end{figure}
 
@@ -162,67 +163,78 @@ comparaison au fichier d'origine dans la figure \ref{fig:lidar_bef_filt}.
 % de la méthode du point moyen, les points se retrouve plus en hauteur et forme
 % plus de pics sur les surfaces planes lorsqu'une impulsion à plusieurs retours.
 
-Les conséquences des différentes méthodes sont visibles dans les triangulations des figures
-\ref{fig:hepia_filt_avg_stl} et \ref{fig:hepia_filt_pond_stl}. On observe que par
-rapport à la figure \ref{fig:hepia_no_filt_stl}, les pics sont moins nombreux 
-que dans la triangulation du fichier original. Cependant dans le cas
-de la méthode du point moyen, les impulsions à retours multiples affectent
-fortement la triangulation. Des pics apparaissent au millieu de surfaces plane
-cela dû au fait que les points ne sont pas pondéré selon l'intensité des
-retours.
+Les effets des différentes méthodes sont aussi visibles dans les triangulations
+des fichiers lidars. Les résultats des triangulations sont dans les figures
+\ref{fig:hepia_filt_avg_stl} et \ref{fig:hepia_filt_pond_stl}.
+
+On observe que par rapport à la triangulation de référence de l'image \ref{fig:hepia_no_filt_stl},
+le nombre de pics est réduit dans la méthode du point pondéré contrairement
+à la méthode du point moyen où les impulsions à retours multiples affectent
+fortement la triangulation. Plus particulièrement, dans la figure
+\ref{fig:hepia_filt_avg_stl} dans la zone bleue, des pics apparaissent au milieu des surfaces planes
+dû au fait que les valeurs des coordonnées des points ne sont pas pondérées
+selon l'intensité des retours et donc la majorité des retours de
+faible intensité prime sur la minorité de retours de forte intensité. 
+
+%Par exemple si un cluster de retours à faible
+%intensité d'une même impulsion se trouve particulièrement
+%élevé, la moyenne fait que la minorité des retours qui auraient des
+%intensités élevées sont fondu dans la masse et fausse le résultat.
 
 \begin{figure}[htbp!]
     \centering
 	\includegraphics[width=0.9\linewidth]{figures/filters/hepia_stl.png}
-	\caption{Triangulation avant nettoyage. Source : réalisé par Jérôme Chételat}
+	\caption{Triangulation avant un nettoyage. Source : réalisé par Jérôme Chételat.}
 	\label{fig:hepia_no_filt_stl}
 \end{figure}
 
 \begin{figure}[htbp!]
     \centering
 	\includegraphics[width=0.9\linewidth]{figures/filters/hepia_filtered_avg_stl.png}
-	\caption{Triangulation aprés nettoyage par point moyen. Source : réalisé par Jérôme Chételat}
+	\caption{Triangulation après un nettoyage par point moyen. Source : réalisé par Jérôme Chételat.}
 	\label{fig:hepia_filt_avg_stl}
 \end{figure}
 
 \begin{figure}[htbp!]
     \centering
 	\includegraphics[width=0.9\linewidth]{figures/filters/hepia_filtered_pond_stl.png}
-	\caption{Triangulation aprés nettoyage par point pondéré. Source : réalisé par Jérôme Chételat}
+	\caption{Triangulation après un nettoyage par point pondéré. Source : réalisé par Jérôme Chételat.}
 	\label{fig:hepia_filt_pond_stl}
 \end{figure}
 
+Au vu des résultats obtenus, la méthode de nettoyage par point pondéré se trouve
+être une meilleure solution en termes de qualité de maillage que la méthode par point moyen.
 
 \newpage
 \subsection{Lissage de maillage}
 
-Le lissage a été effectué avec un epsilon de 2.0.
+Le lissage a été effectué avec un epsilon de 2,0.
 Voici les résultats obtenus sur un maillage comportant une route: 
 
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/mesh_noise.png}
-    \caption{Maillage bruité avec une route avant lissage. Source : réalisé par Jérôme Chételat}
+    \caption{Maillage bruité avec une route avant lissage. Source : réalisé par Jérôme Chételat.}
     \label{fig:mesh_noise}
 \end{figure}
 
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/mesh_noise_not_noise.png}
-    \caption{Maillage avec une route après lissage. Source : réalisé par Jérôme Chételat}
+    \caption{Maillage avec une route après lissage. Source : réalisé par Jérôme Chételat.}
     \label{fig:mesh_noise_not_noise}
 \end{figure}
 
 \begin{figure}[htbp!]
     \centering
     \includegraphics[width=0.8\linewidth]{figures/mesh_noise_difference.png}
-    \caption{Différence d'élévation des maillages après lissage. Vert: maillage de base. Source : réalisé par Jérôme Chételat}
+    \caption{Différence d'élévation des maillages après lissage. Vert: maillage de base. Source : réalisé par Jérôme Chételat.}
     \label{fig:mesh_noise_diff}
 \end{figure}
 
 On observe dans les images précédentes que le lissage rend les surfaces planes et que les pics ne perdent pas d'élévation au-dessus d'un certain $\epsilon$.
 
-\section{Stack Web}
+\section{Stack web}
 \subsection{Serveur web}
 
 Le serveur actuel permet le téléchargement de fichiers \gls{stl} présents dans
@@ -239,16 +251,15 @@ Ce phénomène est normal, car le rendu se fait sans ombres.
 De ce fait, cela rend l'observation des changements d'élévation des surfaces difficile.
 Cependant, on peut voir que le contour de la partie blanche laisse imaginer qu'il y a bien un rendu de maillage présent.
 
-On y observe aussi que dans un tableau de \textit{Float32} se trouve 300'000 valeurs qui correspondent aux 100'000 sommets du maillage (une valeur par composante de la position d'un point).
+On y observe aussi que dans un tableau de \textit{Float32} se trouvent 300'000 valeurs qui correspondent aux 100'000 sommets du maillage (une valeur par composante de la position d'un point).
 
 \textbf{Améliorations possibles} \\
 Le chargement des vertex du maillage se faisant dans un seul file d'exécution,
-la page lors du chargement reste figée et peut ne plus répondre (dépend de la
+la page lors du chargement reste figée et peut ne plus répondre (dépends de la
 puissance de l'hôte) .
 Il serait possible dans un futur proche de faire ces opérations dans des WebWorkers. Au
 moment de l'écriture de ce mémoire, l'utilisation des WebWorkers
 en Rust est encore expérimentale.
 
 Une autre amélioration à faire serait de réaliser le calcul des ombres afin d'afficher les reliefs du maillage.
-Ou encore de donner des contrôles à l'utilisateur pour changer le point 
-de vue du maillage (angle et position de la caméra dans la scène).
+Ou encore de donner des contrôles à l'utilisateur pour changer le point de vue du maillage (angle et position de la caméra dans la scène).
