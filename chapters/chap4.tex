@@ -128,8 +128,72 @@ On observe aucune différence de taille de sortie ni de nombre de points supprim
 Cela s'explique par le choix de la méthode de nettoyage.
 Ici le nombre d'impulsions à retour multiple reste constant et donc le nombre de points à supprimer ne varie pas.
 
-Cependant, on observe des différences de position des points lidars dans les figures de l'annexe 5.
+Cependant, on observe des différences de position des points lidars ainsi que des zones moins dense en point
+dans les figures \ref{fig:lidar_aft_filt_avg}, \ref{fig:lidar_aft_filt_pond} en
+comparaison au fichier d'origine dans la figure \ref{fig:lidar_bef_filt}.
 
+\begin{figure}[htbp!]
+    \centering
+	\includegraphics[width=0.9\linewidth]{figures/filters/hepia_las.png}
+	\caption{Fichier lidars brute avec les batiments de l'HEPIA . Source : réalisé par Jérôme Chételat}
+	\label{fig:lidar_bef_filt}
+\end{figure}
+
+\begin{figure}[htbp!]
+    \centering
+	\includegraphics[width=0.9\linewidth]{figures/filters/hepia_filtered_avg_las.png}
+	\caption{Fichier lidars avec HEPIA aprés nettoyage par point moyen . Source : réalisé par Jérôme Chételat}
+	\label{fig:lidar_aft_filt_avg}
+\end{figure}
+
+\begin{figure}[htbp!]
+    \centering
+	\includegraphics[width=0.9\linewidth]{figures/filters/hepia_filtered_pond_las.png}
+	\caption{Fichier lidars avec HEPIA aprés nettoyage par point pondéré . Source : réalisé par Jérôme Chételat}
+	\label{fig:lidar_aft_filt_pond}
+\end{figure}
+
+\newpage
+
+% Les conséquences des différentes méthodes sont visibles dans les triangulation des figures
+% \ref{fig:hepia_filt_avg_stl}, \ref{fig:hepia_filt_pond_stl}. On observe que par
+% rapport à la figure \ref{fig:hepia_no_filt_stl}, les pics sont moins nombreux et
+% moins dense que dans la triangulation du fichier original. Cependant dans le cas
+% de la méthode du point moyen, les points se retrouve plus en hauteur et forme
+% plus de pics sur les surfaces planes lorsqu'une impulsion à plusieurs retours.
+
+Les conséquences des différentes méthodes sont visibles dans les triangulations des figures
+\ref{fig:hepia_filt_avg_stl} et \ref{fig:hepia_filt_pond_stl}. On observe que par
+rapport à la figure \ref{fig:hepia_no_filt_stl}, les pics sont moins nombreux 
+que dans la triangulation du fichier original. Cependant dans le cas
+de la méthode du point moyen, les impulsions à retours multiples affectent
+fortement la triangulation. Des pics apparaissent au millieu de surfaces plane
+cela dû au fait que les points ne sont pas pondéré selon l'intensité des
+retours.
+
+\begin{figure}[htbp!]
+    \centering
+	\includegraphics[width=0.9\linewidth]{figures/filters/hepia_stl.png}
+	\caption{Triangulation avant nettoyage. Source : réalisé par Jérôme Chételat}
+	\label{fig:hepia_no_filt_stl}
+\end{figure}
+
+\begin{figure}[htbp!]
+    \centering
+	\includegraphics[width=0.9\linewidth]{figures/filters/hepia_filtered_avg_stl.png}
+	\caption{Triangulation aprés nettoyage par point moyen. Source : réalisé par Jérôme Chételat}
+	\label{fig:hepia_filt_avg_stl}
+\end{figure}
+
+\begin{figure}[htbp!]
+    \centering
+	\includegraphics[width=0.9\linewidth]{figures/filters/hepia_filtered_pond_stl.png}
+	\caption{Triangulation aprés nettoyage par point pondéré. Source : réalisé par Jérôme Chételat}
+	\label{fig:hepia_filt_pond_stl}
+\end{figure}
+
+
+\newpage
 \subsection{Lissage de maillage}
 
 Le lissage a été effectué avec un epsilon de 2.0.
